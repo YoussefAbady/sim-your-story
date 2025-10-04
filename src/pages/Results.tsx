@@ -386,23 +386,23 @@ export default function Results() {
             }}
           >
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Impact of Sick Leave</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">{t('results.sickLeaveImpact')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Effective wage without illness:</p>
+                  <p className="text-sm text-muted-foreground">{t('results.wageWithout')}</p>
                   <p className="text-2xl font-bold text-foreground">
                     {results.wageWithoutIllness.toLocaleString('pl-PL')} PLN
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Effective wage with illness:</p>
+                  <p className="text-sm text-muted-foreground">{t('results.wageWith')}</p>
                   <p className="text-2xl font-bold text-zus-red">
                     {results.wageWithIllness.toLocaleString('pl-PL')} PLN
                   </p>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground mt-4">
-                Difference: {(results.wageWithoutIllness - results.wageWithIllness).toLocaleString('pl-PL')} PLN/month
+                {t('results.difference').replace('{amount}', (results.wageWithoutIllness - results.wageWithIllness).toLocaleString('pl-PL'))}
               </p>
             </div>
           </EducationalCard>
@@ -422,23 +422,23 @@ export default function Results() {
           <div className="p-6">
             <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-zus-blue" aria-hidden="true" />
-              Effect of Postponing Retirement
+              {t('results.postponement')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 bg-accent/10 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">+1 Year</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('results.plusOneYear')}</p>
                 <p className="text-2xl font-bold text-zus-green">
                   +{results.postponementDeltas.plusOne.toLocaleString('pl-PL')} PLN
                 </p>
               </div>
               <div className="p-4 bg-accent/10 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">+2 Years</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('results.plusTwoYears')}</p>
                 <p className="text-2xl font-bold text-zus-green">
                   +{results.postponementDeltas.plusTwo.toLocaleString('pl-PL')} PLN
                 </p>
               </div>
               <div className="p-4 bg-accent/10 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">+5 Years</p>
+                <p className="text-sm text-muted-foreground mb-1">{t('results.plusFiveYears')}</p>
                 <p className="text-2xl font-bold text-zus-green">
                   +{results.postponementDeltas.plusFive.toLocaleString('pl-PL')} PLN
                 </p>
