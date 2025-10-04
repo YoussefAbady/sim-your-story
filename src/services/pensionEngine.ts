@@ -67,8 +67,8 @@ export class PensionEngine {
     );
     
     // Calculate account balances
-    const accountBalance = input.accountFunds ?? totalContributions * 0.85; // Estimate if not provided
-    const subAccountBalance = input.subAccountFunds ?? totalContributions * 0.15; // Estimate if not provided
+    const accountBalance = (input.accountFunds && input.accountFunds > 0) ? input.accountFunds : totalContributions * 0.85; // Estimate if not provided
+    const subAccountBalance = (input.subAccountFunds && input.subAccountFunds > 0) ? input.subAccountFunds : totalContributions * 0.15; // Estimate if not provided
     
     // Calculate life expectancy at retirement (from mortality tables)
     const lifeExpectancy = this.calculateLifeExpectancy(input.sex, retirementAge);
