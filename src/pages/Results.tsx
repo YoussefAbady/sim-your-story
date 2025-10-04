@@ -239,198 +239,266 @@ export default function Results() {
         {/* Main Results */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Actual Pension */}
-          <Card className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-lg font-semibold text-muted-foreground">Forecast Pension (Nominal)</h2>
-                <p className="text-4xl font-bold text-foreground mt-2">
-                  {results.actualPension.toLocaleString('pl-PL')} PLN
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">per month</p>
+          <EducationalCard 
+            educationKey="nominalPension"
+            userData={{ 
+              pension: results.actualPension,
+              retirementYear: simulationInput.endYear,
+              salary: simulationInput.grossSalary,
+              yearsWorked: simulationInput.endYear - simulationInput.startYear
+            }}
+          >
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-muted-foreground">Forecast Pension (Nominal)</h2>
+                  <p className="text-4xl font-bold text-foreground mt-2">
+                    {results.actualPension.toLocaleString('pl-PL')} PLN
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">per month</p>
+                </div>
+                <DollarSign className="w-8 h-8 text-zus-green" aria-hidden="true" />
               </div>
-              <DollarSign className="w-8 h-8 text-zus-green" aria-hidden="true" />
             </div>
-          </Card>
+          </EducationalCard>
 
           {/* Real Pension */}
-          <Card className="p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold text-muted-foreground">Real Pension (Inflation-Adjusted)</h2>
+          <EducationalCard 
+            educationKey="realPension"
+            userData={{ 
+              nominalPension: results.actualPension,
+              realPension: results.realPension,
+              inflationImpact: results.actualPension - results.realPension
+            }}
+          >
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-muted-foreground">Real Pension (Inflation-Adjusted)</h2>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info className="w-4 h-4 text-muted-foreground" aria-label="More information" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="max-w-xs">Adjusted for inflation using CPI to show purchasing power in today's terms</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              </div>
+              <p className="text-4xl font-bold text-foreground">
+                {results.realPension.toLocaleString('pl-PL')} PLN
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">per month (2025 value)</p>
+            </div>
+          </EducationalCard>
+        </div>
+
+        {/* Comparison & Replacement Rate */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          {/* Average Benefit Comparison */}
+          <EducationalCard 
+            educationKey="averageComparison"
+            userData={{ 
+              yourPension: results.actualPension,
+              averagePension: results.averageBenefitAtRetirement,
+              percentageDifference: ((results.actualPension / results.averageBenefitAtRetirement - 1) * 100).toFixed(1)
+            }}
+          >
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">vs. Average Benefit</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Your forecast:</span>
+                  <span className="font-semibold">{results.actualPension.toLocaleString('pl-PL')} PLN</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Avg. in {simulationInput.endYear}:</span>
+                  <span className="font-semibold">{results.averageBenefitAtRetirement.toLocaleString('pl-PL')} PLN</span>
+                </div>
+                <div className="pt-2 border-t border-border">
+                  <div className="flex items-center gap-2">
+                    {results.actualPension > results.averageBenefitAtRetirement ? (
+                      <>
+                        <TrendingUp className="w-5 h-5 text-zus-green" aria-hidden="true" />
+                        <span className="text-zus-green font-semibold">
+                          {((results.actualPension / results.averageBenefitAtRetirement - 1) * 100).toFixed(1)}% above average
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <TrendingDown className="w-5 h-5 text-zus-red" aria-hidden="true" />
+                        <span className="text-zus-red font-semibold">
+                          {((1 - results.actualPension / results.averageBenefitAtRetirement) * 100).toFixed(1)}% below average
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </EducationalCard>
+
+          {/* Replacement Rate */}
+          <EducationalCard 
+            educationKey="replacementRate"
+            userData={{ 
+              replacementRate: results.replacementRate,
+              pension: results.actualPension,
+              finalWage: results.actualPension / (results.replacementRate / 100)
+            }}
+          >
+            <div className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-lg font-semibold text-foreground">Replacement Rate</h3>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
                       <Info className="w-4 h-4 text-muted-foreground" aria-label="More information" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="max-w-xs">Adjusted for inflation using CPI to show purchasing power in today's terms</p>
+                      <p className="max-w-xs">Your pension as a percentage of your indexed wage at retirement. Shows how well your pension replaces your working income.</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
+              <p className="text-4xl font-bold text-foreground">
+                {results.replacementRate.toFixed(1)}%
+              </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                of indexed final wage
+              </p>
             </div>
-            <p className="text-4xl font-bold text-foreground">
-              {results.realPension.toLocaleString('pl-PL')} PLN
-            </p>
-            <p className="text-sm text-muted-foreground mt-1">per month (2025 value)</p>
-          </Card>
-        </div>
-
-        {/* Comparison & Replacement Rate */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Average Benefit Comparison */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">vs. Average Benefit</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Your forecast:</span>
-                <span className="font-semibold">{results.actualPension.toLocaleString('pl-PL')} PLN</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Avg. in {simulationInput.endYear}:</span>
-                <span className="font-semibold">{results.averageBenefitAtRetirement.toLocaleString('pl-PL')} PLN</span>
-              </div>
-              <div className="pt-2 border-t border-border">
-                <div className="flex items-center gap-2">
-                  {results.actualPension > results.averageBenefitAtRetirement ? (
-                    <>
-                      <TrendingUp className="w-5 h-5 text-zus-green" aria-hidden="true" />
-                      <span className="text-zus-green font-semibold">
-                        {((results.actualPension / results.averageBenefitAtRetirement - 1) * 100).toFixed(1)}% above average
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <TrendingDown className="w-5 h-5 text-zus-red" aria-hidden="true" />
-                      <span className="text-zus-red font-semibold">
-                        {((1 - results.actualPension / results.averageBenefitAtRetirement) * 100).toFixed(1)}% below average
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Replacement Rate */}
-          <Card className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-lg font-semibold text-foreground">Replacement Rate</h3>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="w-4 h-4 text-muted-foreground" aria-label="More information" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="max-w-xs">Your pension as a percentage of your indexed wage at retirement. Shows how well your pension replaces your working income.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <p className="text-4xl font-bold text-foreground">
-              {results.replacementRate.toFixed(1)}%
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              of indexed final wage
-            </p>
-          </Card>
+          </EducationalCard>
         </div>
 
         {/* Sick Leave Impact (if enabled) */}
         {simulationInput.includeSickLeave && (
-          <Card className="p-6 mb-8">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Impact of Sick Leave</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Effective wage without illness:</p>
-                <p className="text-2xl font-bold text-foreground">
-                  {results.wageWithoutIllness.toLocaleString('pl-PL')} PLN
-                </p>
+          <EducationalCard 
+            educationKey="sickLeaveImpact"
+            userData={{ 
+              wageWithoutIllness: results.wageWithoutIllness,
+              wageWithIllness: results.wageWithIllness,
+              impact: results.wageWithoutIllness - results.wageWithIllness
+            }}
+          >
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Impact of Sick Leave</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Effective wage without illness:</p>
+                  <p className="text-2xl font-bold text-foreground">
+                    {results.wageWithoutIllness.toLocaleString('pl-PL')} PLN
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Effective wage with illness:</p>
+                  <p className="text-2xl font-bold text-zus-red">
+                    {results.wageWithIllness.toLocaleString('pl-PL')} PLN
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Effective wage with illness:</p>
-                <p className="text-2xl font-bold text-zus-red">
-                  {results.wageWithIllness.toLocaleString('pl-PL')} PLN
-                </p>
-              </div>
+              <p className="text-sm text-muted-foreground mt-4">
+                Difference: {(results.wageWithoutIllness - results.wageWithIllness).toLocaleString('pl-PL')} PLN/month
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground mt-4">
-              Difference: {(results.wageWithoutIllness - results.wageWithIllness).toLocaleString('pl-PL')} PLN/month
-            </p>
-          </Card>
+          </EducationalCard>
         )}
 
         {/* Postponement Benefits */}
-        <Card className="p-6 mb-8">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-zus-blue" aria-hidden="true" />
-            Effect of Postponing Retirement
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-accent/10 rounded-lg">
-              <p className="text-sm text-muted-foreground mb-1">+1 Year</p>
-              <p className="text-2xl font-bold text-zus-green">
-                +{results.postponementDeltas.plusOne.toLocaleString('pl-PL')} PLN
-              </p>
-            </div>
-            <div className="p-4 bg-accent/10 rounded-lg">
-              <p className="text-sm text-muted-foreground mb-1">+2 Years</p>
-              <p className="text-2xl font-bold text-zus-green">
-                +{results.postponementDeltas.plusTwo.toLocaleString('pl-PL')} PLN
-              </p>
-            </div>
-            <div className="p-4 bg-accent/10 rounded-lg">
-              <p className="text-sm text-muted-foreground mb-1">+5 Years</p>
-              <p className="text-2xl font-bold text-zus-green">
-                +{results.postponementDeltas.plusFive.toLocaleString('pl-PL')} PLN
-              </p>
+        <EducationalCard 
+          educationKey="postponement"
+          userData={{ 
+            plusOne: results.postponementDeltas.plusOne,
+            plusTwo: results.postponementDeltas.plusTwo,
+            plusFive: results.postponementDeltas.plusFive,
+            currentPension: results.actualPension
+          }}
+          className="mb-8"
+        >
+          <div className="p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-zus-blue" aria-hidden="true" />
+              Effect of Postponing Retirement
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 bg-accent/10 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-1">+1 Year</p>
+                <p className="text-2xl font-bold text-zus-green">
+                  +{results.postponementDeltas.plusOne.toLocaleString('pl-PL')} PLN
+                </p>
+              </div>
+              <div className="p-4 bg-accent/10 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-1">+2 Years</p>
+                <p className="text-2xl font-bold text-zus-green">
+                  +{results.postponementDeltas.plusTwo.toLocaleString('pl-PL')} PLN
+                </p>
+              </div>
+              <div className="p-4 bg-accent/10 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-1">+5 Years</p>
+                <p className="text-2xl font-bold text-zus-green">
+                  +{results.postponementDeltas.plusFive.toLocaleString('pl-PL')} PLN
+                </p>
+              </div>
             </div>
           </div>
-        </Card>
+        </EducationalCard>
 
         {/* Expected vs Actual */}
         {expectedPension > 0 && (
-          <Card className="p-6 mb-8">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Your Expected Pension Goal</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">You wanted:</span>
-                <span className="font-semibold">{expectedPension.toLocaleString('pl-PL')} PLN</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">You'll get:</span>
-                <span className="font-semibold">{results.actualPension.toLocaleString('pl-PL')} PLN</span>
-              </div>
-              <div className="pt-2 border-t border-border">
-                {results.actualPension >= expectedPension ? (
-                  <div className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-zus-green" aria-hidden="true" />
-                    <span className="text-zus-green font-semibold">
-                      You'll exceed your goal! 🎉
-                    </span>
-                  </div>
-                ) : (
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingDown className="w-5 h-5 text-zus-red" aria-hidden="true" />
-                      <span className="text-zus-red font-semibold">
-                        Shortfall: {(expectedPension - results.actualPension).toLocaleString('pl-PL')} PLN/month
+          <EducationalCard 
+            educationKey="expectedVsActual"
+            userData={{ 
+              expectedPension,
+              actualPension: results.actualPension,
+              shortfall: expectedPension - results.actualPension,
+              yearsNeeded
+            }}
+            className="mb-8"
+          >
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">Your Expected Pension Goal</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">You wanted:</span>
+                  <span className="font-semibold">{expectedPension.toLocaleString('pl-PL')} PLN</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">You'll get:</span>
+                  <span className="font-semibold">{results.actualPension.toLocaleString('pl-PL')} PLN</span>
+                </div>
+                <div className="pt-2 border-t border-border">
+                  {results.actualPension >= expectedPension ? (
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-zus-green" aria-hidden="true" />
+                      <span className="text-zus-green font-semibold">
+                        You'll exceed your goal! 🎉
                       </span>
                     </div>
-                    {yearsNeeded !== undefined ? (
-                      <p className="text-sm text-muted-foreground">
-                        To reach your goal, you would need to work approximately <strong>{yearsNeeded} more year{yearsNeeded !== 1 ? 's' : ''}</strong> beyond your planned retirement.
-                      </p>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">
-                        Your expected pension may not be achievable within a reasonable timeframe with current salary levels.
-                      </p>
-                    )}
-                  </div>
-                )}
+                  ) : (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <TrendingDown className="w-5 h-5 text-zus-red" aria-hidden="true" />
+                        <span className="text-zus-red font-semibold">
+                          Shortfall: {(expectedPension - results.actualPension).toLocaleString('pl-PL')} PLN/month
+                        </span>
+                      </div>
+                      {yearsNeeded !== undefined ? (
+                        <p className="text-sm text-muted-foreground">
+                          To reach your goal, you would need to work approximately <strong>{yearsNeeded} more year{yearsNeeded !== 1 ? 's' : ''}</strong> beyond your planned retirement.
+                        </p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          Your expected pension may not be achievable within a reasonable timeframe with current salary levels.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </Card>
+          </EducationalCard>
         )}
 
         {/* Did You Know? */}
