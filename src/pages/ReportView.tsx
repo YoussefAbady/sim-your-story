@@ -57,19 +57,24 @@ export default function ReportView() {
       <header className="border-b border-border bg-card sticky top-0 z-10 print:hidden">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/results")}
-              className="gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Results
-            </Button>
-            <img 
-              src="/src/assets/zus-logo.png" 
-              alt="ZUS - Zakład Ubezpieczeń Społecznych" 
-              className="h-10 md:h-12 w-auto"
-            />
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/results")}
+                className="gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Results
+              </Button>
+            </div>
+            <div className="flex items-center gap-6">
+              <img 
+                src="/src/assets/zus-logo.png" 
+                alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+                className="h-10 md:h-12 w-auto"
+              />
+              <h1 className="text-xl font-bold text-foreground">Retirement Simulator</h1>
+            </div>
             <Button onClick={handlePrint} className="gap-2">
               <Download className="w-4 h-4" />
               Download PDF

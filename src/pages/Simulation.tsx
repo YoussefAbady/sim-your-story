@@ -99,12 +99,13 @@ export default function Simulation() {
       </a>
 
       <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-6 flex items-center justify-center">
+        <div className="container mx-auto px-4 py-6 flex items-center gap-6">
           <img 
             src="/src/assets/zus-logo.png" 
             alt="ZUS - Zakład Ubezpieczeń Społecznych" 
             className="h-12 md:h-14 w-auto"
           />
+          <h1 className="text-2xl font-bold text-foreground">Retirement Simulator</h1>
         </div>
       </header>
 

@@ -211,10 +211,7 @@ export default function Results() {
                     alt="ZUS - Zakład Ubezpieczeń Społecznych" 
                     className="h-10 md:h-12 w-auto"
                   />
-                  <div className="sr-only">
-                    <h1 className="text-3xl font-bold text-foreground">Your Pension Forecast</h1>
-                    <p className="text-muted-foreground mt-2">Based on ZUS actuarial data (2023-2080)</p>
-                  </div>
+                  <h1 className="text-xl md:text-2xl font-bold text-foreground">Retirement Simulator</h1>
                 </div>
                 <SidebarTrigger className="gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md">
                   <Settings className="w-4 h-4" />
