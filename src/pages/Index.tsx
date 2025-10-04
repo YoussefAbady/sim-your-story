@@ -16,6 +16,15 @@ export default function Index() {
   const navigate = useNavigate();
   const [expectedPension, setExpectedPension] = useState<string>("3000");
 
+  const handleExpectedPensionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setExpectedPension(value);
+    // Store in sessionStorage for use in results
+    if (value) {
+      sessionStorage.setItem("expectedPension", value);
+    }
+  };
+
   // Mock data - will be replaced with real data
   const currentAverage = 2850;
   const pensionGroups = [
@@ -109,7 +118,7 @@ export default function Index() {
                     id="expected-pension"
                     type="number"
                     value={expectedPension}
-                    onChange={(e) => setExpectedPension(e.target.value)}
+                    onChange={handleExpectedPensionChange}
                     className="pr-12 text-lg"
                     aria-describedby="pension-comparison"
                   />
