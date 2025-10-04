@@ -25,7 +25,7 @@ const App = () => (
           <BadgeCollection />
           <SessionSummary />
           <BrowserRouter>
-            <EducationTipDisplay sidebarOpen={false} />
+            <EducationTipDisplay />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/simulation" element={<Simulation />} />
