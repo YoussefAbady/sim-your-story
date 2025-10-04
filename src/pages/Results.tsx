@@ -29,6 +29,7 @@ import { AccountGrowthChart } from "@/components/dashboard/AccountGrowthChart";
 import { HistoricalSalaryInput } from "@/components/dashboard/HistoricalSalaryInput";
 import { FutureSalaryInput } from "@/components/dashboard/FutureSalaryInput";
 import { IllnessPeriodInput } from "@/components/dashboard/IllnessPeriodInput";
+import { SidebarToggleButton } from "@/components/SidebarToggleButton";
 
 export interface SalaryPeriod {
   id: string;
@@ -124,10 +125,7 @@ export default function Results() {
                     <p className="text-muted-foreground mt-2">Based on ZUS actuarial data (2023-2080)</p>
                   </div>
                 </div>
-                <SidebarTrigger className="gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md">
-                  <Settings className="w-4 h-4" />
-                  <span className="font-medium">Advanced Controls</span>
-                </SidebarTrigger>
+                <SidebarToggleButton />
               </div>
             </div>
           </header>
