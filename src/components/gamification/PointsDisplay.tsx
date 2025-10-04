@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Star, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { getNextMilestone } from "@/services/sessionPointsService";
+import { useEffect, useState } from "react";
 
 export const PointsDisplay = () => {
   const {
@@ -15,9 +16,21 @@ export const PointsDisplay = () => {
     lockedBadges,
   } = useGamification();
   
+  const [prevPoints, setPrevPoints] = useState(sessionPoints);
+  const [showCelebration, setShowCelebration] = useState(false);
+  
   const nextMilestone = getNextMilestone(sessionPoints);
   const allBadges = [...earnedBadges, ...(lockedBadges || [])];
   const earnedCount = allBadges.filter((b) => sessionPoints >= b.points_required).length;
+
+  // Trigger celebration when points increase
+  useEffect(() => {
+    if (sessionPoints > prevPoints) {
+      setShowCelebration(true);
+      setTimeout(() => setShowCelebration(false), 1000);
+    }
+    setPrevPoints(sessionPoints);
+  }, [sessionPoints]);
 
   if (isLoading) {
     return null;
@@ -32,8 +45,20 @@ export const PointsDisplay = () => {
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <motion.div
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}
+            animate={showCelebration ? {
+              scale: [1, 1.3, 1],
+              rotate: [0, 360],
+            } : {
+              rotate: [0, 10, -10, 0]
+            }}
+            transition={showCelebration ? {
+              duration: 0.6,
+              ease: "easeInOut"
+            } : {
+              duration: 2,
+              repeat: Infinity,
+              repeatDelay: 5
+            }}
             className="bg-primary/20 p-2 rounded-full"
           >
             <Zap className="w-5 h-5 text-primary" />

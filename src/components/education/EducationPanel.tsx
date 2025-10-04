@@ -113,20 +113,42 @@ export function EducationPanel() {
                 const isLoadingDetails = loadingDetailedTips.has(tipKey);
                 
                 return (
-                  <Card key={tipKey} className="relative">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          {tip.icon && <span className="text-lg">{tip.icon}</span>}
-                          <span className="flex-1">{tip.title}</span>
-                        </CardTitle>
-                        {tip.timestamp && (
-                          <span className="text-xs text-muted-foreground whitespace-nowrap">
-                            {formatTimestamp(tip.timestamp)}
-                          </span>
-                        )}
-                      </div>
-                    </CardHeader>
+                  <motion.div
+                    key={tipKey}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Card className="relative">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <CardTitle className="text-sm flex items-center gap-2">
+                            {tip.icon && (
+                              <motion.span 
+                                className="text-lg"
+                                animate={{ 
+                                  y: [0, -4, 0],
+                                  rotate: [0, 5, -5, 0]
+                                }}
+                                transition={{ 
+                                  duration: 2,
+                                  repeat: Infinity,
+                                  repeatType: "reverse",
+                                  ease: "easeInOut"
+                                }}
+                              >
+                                {tip.icon}
+                              </motion.span>
+                            )}
+                            <span className="flex-1">{tip.title}</span>
+                          </CardTitle>
+                          {tip.timestamp && (
+                            <span className="text-xs text-muted-foreground whitespace-nowrap">
+                              {formatTimestamp(tip.timestamp)}
+                            </span>
+                          )}
+                        </div>
+                      </CardHeader>
                     <CardContent className="space-y-2">
                       <p className="text-sm text-muted-foreground">{tip.content}</p>
                       
@@ -170,7 +192,8 @@ export function EducationPanel() {
                         </AnimatePresence>
                       </div>
                     </CardContent>
-                  </Card>
+                    </Card>
+                  </motion.div>
                 );
               })}
             </div>
