@@ -101,7 +101,7 @@ export default function Results() {
   const randomFact = PENSION_FACTS[Math.floor(Math.random() * PENSION_FACTS.length)];
 
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={false} open={false}>
       <div className="min-h-screen flex w-full bg-background">
         <div className="flex-1 flex flex-col min-h-screen">
           <header className="border-b border-border bg-card sticky top-0 z-10">
