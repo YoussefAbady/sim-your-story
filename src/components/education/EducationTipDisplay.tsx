@@ -41,11 +41,6 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
     hideTip();
   };
 
-  // Hide this global instance on results page (Results has its own)
-  if (isResultsPage) {
-    return null;
-  }
-
   return (
     <AnimatePresence>
       {(currentTip || isLoading) && (
