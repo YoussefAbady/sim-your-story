@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -100,11 +100,13 @@ export default function Simulation() {
 
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-6 flex items-center gap-6">
-          <img 
-            src="/src/assets/zus-logo.png" 
-            alt="ZUS - Zakład Ubezpieczeń Społecznych" 
-            className="h-12 md:h-14 w-auto"
-          />
+          <Link to="/">
+            <img 
+              src="/src/assets/zus-logo.png" 
+              alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+              className="h-12 md:h-14 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+            />
+          </Link>
           <h1 className="text-2xl font-bold text-foreground">Retirement Simulator</h1>
         </div>
       </header>

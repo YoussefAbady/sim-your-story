@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -206,11 +206,13 @@ export default function Results() {
                     <ArrowLeft className="w-4 h-4" />
                     Back
                   </Button>
-                  <img 
-                    src="/src/assets/zus-logo.png" 
-                    alt="ZUS - Zakład Ubezpieczeń Społecznych" 
-                    className="h-10 md:h-12 w-auto"
-                  />
+                  <Link to="/">
+                    <img 
+                      src="/src/assets/zus-logo.png" 
+                      alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+                      className="h-10 md:h-12 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+                    />
+                  </Link>
                   <h1 className="text-xl md:text-2xl font-bold text-foreground">Retirement Simulator</h1>
                 </div>
                 <SidebarTrigger className="gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md">

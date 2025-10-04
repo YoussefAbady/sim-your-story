@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -76,11 +76,13 @@ export default function Index() {
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-6 flex items-center gap-6">
-          <img 
-            src="/src/assets/logo.png" 
-            alt="ZUS - Zakład Ubezpieczeń Społecznych" 
-            className="h-16 md:h-20 w-auto"
-          />
+          <Link to="/">
+            <img 
+              src="/src/assets/logo.png" 
+              alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+              className="h-16 md:h-20 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+            />
+          </Link>
           <h1 className="text-3xl font-bold text-foreground">Retirement Simulator</h1>
         </div>
       </header>
