@@ -153,6 +153,7 @@ export default function Simulation() {
                             {...field}
                             aria-required="true"
                             educationKey="birthDate"
+                            userData={form.getValues()}
                           />
                         </FormControl>
                         <FormMessage />
@@ -196,6 +197,7 @@ export default function Simulation() {
                           {...field}
                           aria-required="true"
                           educationKey="currentSalary"
+                          userData={form.getValues()}
                         />
                       </FormControl>
                       <FormDescription>Your current monthly gross salary in PLN</FormDescription>
@@ -219,6 +221,7 @@ export default function Simulation() {
                             aria-required="true"
                             aria-describedby="start-year-note"
                             educationKey="workStartYear"
+                            userData={form.getValues()}
                           />
                         </FormControl>
                         <FormDescription id="start-year-note">Calculations use January of this year</FormDescription>
@@ -241,6 +244,7 @@ export default function Simulation() {
                             aria-required="true"
                             aria-describedby="end-year-note"
                             educationKey="contributionYears"
+                            userData={form.getValues()}
                           />
                         </FormControl>
                         <FormDescription id="end-year-note">
@@ -269,6 +273,7 @@ export default function Simulation() {
                           placeholder="00-000" 
                           {...field} 
                           educationKey="employmentGaps"
+                          userData={form.getValues()}
                         />
                       </FormControl>
                       <FormDescription>Helps us provide more accurate regional analysis</FormDescription>
@@ -290,6 +295,7 @@ export default function Simulation() {
                             placeholder="0" 
                             {...field} 
                             educationKey="simulation"
+                            userData={form.getValues()}
                           />
                         </FormControl>
                         <FormDescription>Leave blank to estimate</FormDescription>
@@ -310,6 +316,7 @@ export default function Simulation() {
                             placeholder="0" 
                             {...field} 
                             educationKey="simulation"
+                            userData={form.getValues()}
                           />
                         </FormControl>
                         <FormDescription>Leave blank to estimate</FormDescription>
