@@ -81,11 +81,6 @@ export default function Index() {
             alt="ZUS - Zakład Ubezpieczeń Społecznych" 
             className="h-16 md:h-20 w-auto"
           />
-          <img 
-            src="/src/assets/zus-logo.png" 
-            alt="ZUS - Zakład Ubezpieczeń Społecznych" 
-            className="h-16 md:h-20 w-auto"
-          />
           <h1 className="text-3xl font-bold text-foreground">Retirement Simulator</h1>
         </div>
       </header>
