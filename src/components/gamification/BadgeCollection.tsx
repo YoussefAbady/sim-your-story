@@ -1,28 +1,43 @@
+import { useState } from "react";
 import { useGamification } from "@/contexts/GamificationContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
-import { Lock } from "lucide-react";
+import { Lock, Gift } from "lucide-react";
+import { RedeemPrizeDialog } from "./RedeemPrizeDialog";
 
 export const BadgeCollection = () => {
   const { earnedBadges, lockedBadges, showBadgeModal, setShowBadgeModal, sessionPoints } = useGamification();
+  const [showRedeemDialog, setShowRedeemDialog] = useState(false);
 
   const allBadges = [...earnedBadges, ...lockedBadges].sort((a, b) => a.points_required - b.points_required);
   const earnedCount = allBadges.filter((b) => sessionPoints >= b.points_required).length;
 
   return (
-    <Dialog open={showBadgeModal} onOpenChange={setShowBadgeModal}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader className="sticky top-0 bg-background z-10 pb-4">
-          <DialogTitle className="text-2xl font-bold">Badge Collection</DialogTitle>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>
-              {earnedCount} of {allBadges.length} badges earned
-            </span>
-            <Progress value={(earnedCount / allBadges.length) * 100} className="h-2 flex-1" />
-          </div>
-        </DialogHeader>
+    <>
+      <Dialog open={showBadgeModal} onOpenChange={setShowBadgeModal}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader className="sticky top-0 bg-background z-10 pb-4">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-2xl font-bold">Badge Collection</DialogTitle>
+              <Button 
+                onClick={() => setShowRedeemDialog(true)}
+                className="gap-2"
+                variant="default"
+              >
+                <Gift className="w-4 h-4" />
+                Redeem Prize ({sessionPoints} pts)
+              </Button>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>
+                {earnedCount} of {allBadges.length} badges earned
+              </span>
+              <Progress value={(earnedCount / allBadges.length) * 100} className="h-2 flex-1" />
+            </div>
+          </DialogHeader>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {allBadges.map((badge, index) => {
@@ -73,5 +88,12 @@ export const BadgeCollection = () => {
         </div>
       </DialogContent>
     </Dialog>
+    
+    <RedeemPrizeDialog 
+      open={showRedeemDialog}
+      onOpenChange={setShowRedeemDialog}
+      currentPoints={sessionPoints}
+    />
+    </>
   );
 };

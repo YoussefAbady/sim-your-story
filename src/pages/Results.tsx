@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import zusLogo from "@/assets/zus-logo.png";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw, Download, Mail, Eye } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw, Download, Mail, Eye, Brain } from "lucide-react";
+import { QuizWizard } from "@/components/quiz/QuizWizard";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,6 +70,7 @@ export default function Results() {
   const [activeTab, setActiveTab] = useState("growth");
   const [isUpdating, setIsUpdating] = useState(false);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [quizDialogOpen, setQuizDialogOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -520,6 +522,16 @@ export default function Results() {
                 {t('results.runNewSimulation')}
               </Button>
               
+              <Button
+                onClick={() => setQuizDialogOpen(true)}
+                size="lg"
+                variant="secondary"
+                className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+              >
+                <Brain className="w-5 h-5" />
+                Take Quiz! 🎯 (Earn up to 500 pts)
+              </Button>
+              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button size="lg" className="gap-2">
@@ -548,6 +560,11 @@ export default function Results() {
               open={emailDialogOpen}
               onOpenChange={setEmailDialogOpen}
               onSendEmail={handleSendEmail}
+            />
+            
+            <QuizWizard
+              open={quizDialogOpen}
+              onOpenChange={setQuizDialogOpen}
             />
 
             {/* Data Source Footer */}
