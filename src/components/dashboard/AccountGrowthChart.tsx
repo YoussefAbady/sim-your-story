@@ -11,16 +11,27 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { Baby, User, Users, Briefcase, Heart } from "lucide-react";
 
 interface AccountGrowthChartProps {
   simulationInput: SimulationInput;
 }
 
 export function AccountGrowthChart({ simulationInput }: AccountGrowthChartProps) {
+  const getAgeIcon = (age: number) => {
+    if (age < 18) return "👶";
+    if (age < 30) return "🧑";
+    if (age < 45) return "👨‍💼";
+    if (age < 60) return "👴";
+    return "🎂";
+  };
+
   const chartData = useMemo(() => {
     const data = [];
     const CONTRIBUTION_RATE = 0.1952;
     const currentYear = new Date().getFullYear();
+    const currentAge = simulationInput.age;
+    const yearsFromNow = simulationInput.startYear - currentYear;
     
     let accountBalance = 0;
     let subAccountBalance = 0;
@@ -42,8 +53,13 @@ export function AccountGrowthChart({ simulationInput }: AccountGrowthChartProps)
       accountBalance += annualContribution * 0.85;
       subAccountBalance += annualContribution * 0.15;
       
+      const yearsSinceStart = year - simulationInput.startYear;
+      const age = currentAge + yearsFromNow + yearsSinceStart;
+      
       data.push({
         year,
+        age,
+        ageIcon: getAgeIcon(age),
         mainAccount: Math.round(accountBalance),
         subAccount: Math.round(subAccountBalance),
         total: Math.round(accountBalance + subAccountBalance),
@@ -54,14 +70,51 @@ export function AccountGrowthChart({ simulationInput }: AccountGrowthChartProps)
   }, [simulationInput]);
 
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-[450px]">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData}>
+        <LineChart data={chartData} margin={{ bottom: 50 }}>
           <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
           <XAxis 
             dataKey="year" 
             className="text-xs"
-            tick={{ fill: 'hsl(var(--muted-foreground))' }}
+            tick={(props) => {
+              const { x, y, payload } = props;
+              const dataPoint = chartData.find(d => d.year === payload.value);
+              return (
+                <g transform={`translate(${x},${y})`}>
+                  <text 
+                    x={0} 
+                    y={0} 
+                    dy={16} 
+                    textAnchor="middle" 
+                    fill="hsl(var(--muted-foreground))"
+                    fontSize={10}
+                  >
+                    {payload.value}
+                  </text>
+                  <text 
+                    x={0} 
+                    y={0} 
+                    dy={28}
+                    textAnchor="middle"
+                    fontSize={16}
+                  >
+                    {dataPoint?.ageIcon || ""}
+                  </text>
+                  <text 
+                    x={0} 
+                    y={0} 
+                    dy={42}
+                    textAnchor="middle"
+                    fill="hsl(var(--muted-foreground))"
+                    fontSize={9}
+                  >
+                    {dataPoint?.age}y
+                  </text>
+                </g>
+              );
+            }}
+            height={60}
           />
           <YAxis 
             className="text-xs"
