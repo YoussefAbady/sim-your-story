@@ -3,11 +3,16 @@ import { Card } from "@/components/ui/card";
 import { Lightbulb, X, Loader2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const EducationTipDisplay = () => {
   const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Reset expanded state when tip changes
+  useEffect(() => {
+    setIsExpanded(false);
+  }, [currentTip?.id]);
 
   const handleLearnMore = () => {
     if (!currentTip?.detailedContent && currentTip) {
