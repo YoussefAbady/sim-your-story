@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download } from "lucide-react";
 import { PensionReport } from "@/components/report/PensionReport";
-import { Header } from "@/components/Header";
 import { SimulationInput, SimulationResult } from "@/services/pensionEngine";
 import { SalaryPeriod, IllnessPeriod } from "@/pages/Results";
 
@@ -55,10 +54,7 @@ export default function ReportView() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="print:hidden">
-        <Header />
-      </div>
-      <div className="border-b border-border bg-card sticky top-0 z-10 print:hidden">
+      <header className="border-b border-border bg-card sticky top-0 z-10 print:hidden">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
@@ -75,7 +71,7 @@ export default function ReportView() {
             </Button>
           </div>
         </div>
-      </div>
+      </header>
 
       <main className="container mx-auto py-8">
         <PensionReport

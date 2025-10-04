@@ -17,7 +17,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { AlertCircle, Calculator } from "lucide-react";
 import { SICK_LEAVE_DATA } from "@/services/pensionData";
-import { Header } from "@/components/Header";
 import {
   Form,
   FormControl,
@@ -99,7 +98,12 @@ export default function Simulation() {
         Skip to main content
       </a>
 
-      <Header />
+      <header className="border-b border-border bg-card">
+        <div className="container mx-auto px-4 py-6">
+          <h1 className="text-3xl font-bold text-foreground">Pension Simulation</h1>
+          <p className="text-muted-foreground mt-2">Enter your details to forecast your pension</p>
+        </div>
+      </header>
 
       <main id="main-content" className="container mx-auto px-4 py-8 max-w-3xl">
         <Card className="p-6">
