@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { useEducation } from "@/contexts/EducationContext";
 import { ComponentProps } from "react";
+import { useSessionPoints } from "@/hooks/useSessionPoints";
 
 interface EducationalCardProps extends ComponentProps<typeof Card> {
   educationKey: string;
@@ -10,8 +11,12 @@ interface EducationalCardProps extends ComponentProps<typeof Card> {
 
 export const EducationalCard = ({ educationKey, children, userData, ...props }: EducationalCardProps) => {
   const { showAITip } = useEducation();
+  const { awardPoints, POINT_VALUES } = useSessionPoints();
 
   const handleClick = () => {
+    // Award points for card click
+    awardPoints(`card_click_${educationKey}`, POINT_VALUES.CARD_CLICK);
+    
     showAITip(educationKey, userData);
   };
 

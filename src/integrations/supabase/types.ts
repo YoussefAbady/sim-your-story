@@ -110,6 +110,42 @@ export type Database = {
         }
         Relationships: []
       }
+      session_points_summary: {
+        Row: {
+          actions_performed: number
+          created_at: string
+          duration_seconds: number | null
+          id: string
+          milestone_reached: string | null
+          session_id: string
+          total_points: number
+          unique_interactions: Json | null
+          user_identifier: string
+        }
+        Insert: {
+          actions_performed?: number
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          milestone_reached?: string | null
+          session_id: string
+          total_points?: number
+          unique_interactions?: Json | null
+          user_identifier: string
+        }
+        Update: {
+          actions_performed?: number
+          created_at?: string
+          duration_seconds?: number | null
+          id?: string
+          milestone_reached?: string | null
+          session_id?: string
+          total_points?: number
+          unique_interactions?: Json | null
+          user_identifier?: string
+        }
+        Relationships: []
+      }
       session_time: {
         Row: {
           created_at: string

@@ -9,6 +9,7 @@ import {
   UserPoints,
 } from "@/services/gamificationService";
 import { toast } from "@/hooks/use-toast";
+import { getSessionStats } from "@/services/sessionPointsService";
 
 interface GamificationContextType {
   points: number;
@@ -24,6 +25,9 @@ interface GamificationContextType {
   refreshBadges: () => Promise<void>;
   showBadgeModal: boolean;
   setShowBadgeModal: (show: boolean) => void;
+  // Session points
+  sessionPoints: number;
+  sessionMilestone: string;
 }
 
 const GamificationContext = createContext<GamificationContextType | undefined>(undefined);
@@ -35,11 +39,22 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
   const [lockedBadges, setLockedBadges] = useState<Badge[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
+  const [sessionPoints, setSessionPoints] = useState(0);
+  const [sessionMilestone, setSessionMilestone] = useState("");
 
   const levelInfo = getLevelInfo(points);
 
   useEffect(() => {
     loadUserData();
+    
+    // Update session points periodically
+    const interval = setInterval(() => {
+      const stats = getSessionStats();
+      setSessionPoints(stats.points);
+      setSessionMilestone(stats.milestone);
+    }, 1000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const loadUserData = async () => {
@@ -124,6 +139,8 @@ export const GamificationProvider = ({ children }: { children: ReactNode }) => {
         refreshBadges,
         showBadgeModal,
         setShowBadgeModal,
+        sessionPoints,
+        sessionMilestone,
       }}
     >
       {children}

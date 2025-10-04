@@ -7,6 +7,7 @@ import { EducationProvider } from "@/contexts/EducationContext";
 import { EducationTipDisplay } from "@/components/education/EducationTipDisplay";
 import { GamificationProvider } from "@/contexts/GamificationContext";
 import { BadgeCollection } from "@/components/gamification/BadgeCollection";
+import { SessionSummary } from "@/components/gamification/SessionSummary";
 import Index from "./pages/Index";
 import Simulation from "./pages/Simulation";
 import Results from "./pages/Results";
@@ -25,6 +26,7 @@ const App = () => (
           <Sonner />
           <EducationTipDisplay />
           <BadgeCollection />
+          <SessionSummary />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
