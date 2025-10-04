@@ -1,11 +1,25 @@
 import { useEducation } from "@/contexts/EducationContext";
 import { Card } from "@/components/ui/card";
-import { Lightbulb, X, Loader2 } from "lucide-react";
+import { Lightbulb, X, Loader2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 export const EducationTipDisplay = () => {
-  const { currentTip, isLoading, hideTip } = useEducation();
+  const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleLearnMore = () => {
+    if (!currentTip?.detailedContent && currentTip) {
+      loadDetailedContent(currentTip.id);
+    }
+    setIsExpanded(true);
+  };
+
+  const handleClose = () => {
+    setIsExpanded(false);
+    hideTip();
+  };
 
   return (
     <AnimatePresence>
@@ -15,9 +29,11 @@ export const EducationTipDisplay = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="fixed bottom-6 right-6 z-50 max-w-md"
+          className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
+            isExpanded ? 'max-w-2xl w-full' : 'max-w-md'
+          }`}
         >
-          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30 p-5 shadow-lg">
+          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30 p-5 shadow-lg max-h-[80vh] overflow-y-auto">
             {isLoading ? (
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
@@ -39,14 +55,27 @@ export const EducationTipDisplay = () => {
                       {currentTip.icon && <span className="text-xl">{currentTip.icon}</span>}
                       Did You Know?
                     </h3>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 -mt-1"
-                      onClick={hideTip}
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
+                    <div className="flex gap-1">
+                      {!isExpanded && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={handleLearnMore}
+                          title="Learn more"
+                        >
+                          <BookOpen className="w-4 h-4" />
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={handleClose}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                   <h4 className="font-medium text-sm text-foreground mb-1">
                     {currentTip.title}
@@ -54,6 +83,29 @@ export const EducationTipDisplay = () => {
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {currentTip.content}
                   </p>
+                  
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="mt-4 pt-4 border-t border-primary/20"
+                    >
+                      {isLoadingDetailed ? (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span className="text-sm">Loading detailed information...</span>
+                        </div>
+                      ) : currentTip.detailedContent ? (
+                        <div className="prose prose-sm max-w-none">
+                          <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">
+                            {currentTip.detailedContent}
+                          </p>
+                        </div>
+                      ) : null}
+                    </motion.div>
+                  )}
                 </div>
               </div>
             ) : null}

@@ -11,17 +11,38 @@ serve(async (req) => {
   }
 
   try {
-    const { fieldKey, userData } = await req.json();
+    const { fieldKey, userData, detailed = false } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log('Generating education tip for field:', fieldKey, 'with user data:', userData);
+    console.log('Generating education tip for field:', fieldKey, 'with user data:', userData, 'detailed:', detailed);
 
     // Build context-aware prompt
-    const systemPrompt = `You are an educational assistant for a Polish pension calculator (ZUS). Explain pension concepts in the SIMPLEST way possible for people with basic education.
+    const systemPrompt = detailed 
+      ? `You are an educational assistant for a Polish pension calculator (ZUS). Provide DETAILED educational content about pension concepts.
+
+CRITICAL RULES FOR DETAILED CONTENT:
+- Provide comprehensive explanation (300-500 words)
+- Use clear sections with examples
+- Include specific use cases based on user's data
+- Explain with real numbers and calculations using their salary/age
+- Break down complex concepts into digestible parts
+- Use bullet points and clear formatting
+- Include practical tips and recommendations
+- Show how it affects THEIR specific pension calculation
+- ALWAYS respond in English
+- Make it personal and actionable
+
+Structure:
+1. Clear explanation of the concept
+2. How it works in Polish ZUS system
+3. Specific examples using user's data
+4. Practical implications for their pension
+5. Actionable recommendations`
+      : `You are an educational assistant for a Polish pension calculator (ZUS). Explain pension concepts in the SIMPLEST way possible for people with basic education.
 
 CRITICAL RULES:
 - Maximum 2-3 SHORT sentences (5 lines max total)
@@ -40,7 +61,7 @@ Example good response:
 Example bad response:
 "The contribution rate established by ZUS regulations stipulates that 19.52% of gross remuneration is allocated to the pension capital account, thereby determining future retirement benefits through actuarial calculations."`;
 
-    const userContext = buildUserContext(fieldKey, userData);
+    const userContext = buildUserContext(fieldKey, userData, detailed);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -81,6 +102,14 @@ Example bad response:
     const data = await response.json();
     const content = data.choices[0].message.content;
 
+    if (detailed) {
+      // For detailed content, return just the detailed text
+      return new Response(
+        JSON.stringify({ detailedContent: content }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Extract title and content from AI response
     const lines = content.split('\n').filter((line: string) => line.trim());
     const title = lines[0].replace(/^#+\s*/, '').replace(/^\*\*/, '').replace(/\*\*$/, '');
@@ -109,22 +138,32 @@ Example bad response:
   }
 });
 
-function buildUserContext(fieldKey: string, userData: any): string {
+function buildUserContext(fieldKey: string, userData: any, detailed = false): string {
   const age = userData?.age || null;
-  const gender = userData?.gender || null;
+  const gender = userData?.gender || userData?.sex || null;
   const currentSalary = userData?.currentSalary || null;
   const workStartYear = userData?.workStartYear || null;
   const expectedPension = userData?.expectedPension || null;
 
-  let context = `Generate an educational tip about "${fieldKey}" for the Polish pension system.\n\n`;
+  let context = `Generate ${detailed ? 'detailed educational content' : 'an educational tip'} about "${fieldKey}" for the Polish pension system.\n\n`;
 
-  if (age) context += `User is ${age} years old. `;
-  if (gender) context += `Gender: ${gender}. `;
-  if (currentSalary) context += `Current salary: ${currentSalary} PLN/month. `;
-  if (workStartYear) context += `Started working in ${workStartYear}. `;
-  if (expectedPension) context += `Expected pension goal: ${expectedPension} PLN/month. `;
+  context += `USER PROFILE:\n`;
+  if (age) context += `- Age: ${age} years old\n`;
+  if (gender) context += `- Gender: ${gender}\n`;
+  if (currentSalary) context += `- Current salary: ${currentSalary} PLN/month\n`;
+  if (workStartYear) context += `- Started working in: ${workStartYear}\n`;
+  if (expectedPension) context += `- Expected pension goal: ${expectedPension} PLN/month\n`;
 
-  context += `\n\nProvide a personalized tip with:\n1. A clear, engaging title (one line)\n2. 2-3 sentences explaining how this affects their pension, using their specific data when relevant.`;
+  if (detailed) {
+    context += `\n\nProvide comprehensive educational content that:\n`;
+    context += `1. Explains the concept in detail\n`;
+    context += `2. Shows specific calculations using THEIR data (age: ${age}, salary: ${currentSalary} PLN, gender: ${gender})\n`;
+    context += `3. Includes real examples and use cases\n`;
+    context += `4. Explains how it impacts THEIR specific pension amount\n`;
+    context += `5. Provides actionable recommendations for THEIR situation`;
+  } else {
+    context += `\n\nProvide a personalized tip with:\n1. A clear, engaging title (one line)\n2. 2-3 sentences explaining how this affects their pension, using their specific data when relevant.`;
+  }
 
   return context;
 }

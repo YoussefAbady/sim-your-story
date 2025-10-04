@@ -7,13 +7,16 @@ export interface EducationTip {
   title: string;
   content: string;
   icon?: string;
+  detailedContent?: string;
 }
 
 interface EducationContextType {
   currentTip: EducationTip | null;
   isLoading: boolean;
+  isLoadingDetailed: boolean;
   showTip: (tip: EducationTip) => void;
   showAITip: (fieldKey: string, userData?: any) => Promise<void>;
+  loadDetailedContent: (fieldKey: string, userData?: any) => Promise<void>;
   hideTip: () => void;
 }
 
@@ -25,6 +28,7 @@ const tipCache = new Map<string, EducationTip>();
 export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentTip, setCurrentTip] = useState<EducationTip | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDetailed, setIsLoadingDetailed] = useState(false);
 
   const showTip = (tip: EducationTip) => {
     setCurrentTip(tip);
@@ -71,12 +75,37 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
+  const loadDetailedContent = async (fieldKey: string, userData?: any) => {
+    if (!currentTip) return;
+    
+    setIsLoadingDetailed(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-education-tip', {
+        body: { fieldKey, userData, detailed: true }
+      });
+
+      if (error) {
+        console.error('Error loading detailed content:', error);
+        return;
+      }
+
+      if (data?.detailedContent) {
+        setCurrentTip(prev => prev ? { ...prev, detailedContent: data.detailedContent } : null);
+      }
+    } catch (err) {
+      console.error('Failed to load detailed content:', err);
+    } finally {
+      setIsLoadingDetailed(false);
+    }
+  };
+
   const hideTip = () => {
     setCurrentTip(null);
   };
 
   return (
-    <EducationContext.Provider value={{ currentTip, isLoading, showTip, showAITip, hideTip }}>
+    <EducationContext.Provider value={{ currentTip, isLoading, isLoadingDetailed, showTip, showAITip, loadDetailedContent, hideTip }}>
       {children}
     </EducationContext.Provider>
   );
