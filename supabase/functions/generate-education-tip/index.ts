@@ -30,7 +30,10 @@ serve(async (req) => {
       'futureProjections', 'historicalSalaries', 'illnessPeriods', 'retirementAge',
       'workStartYear', 'expectedPension', 'pensionGroups', 'minimumPension',
       'averagePension', 'aboveAverage', 'contributionYears', 'sickLeave',
-      'simulation', 'employmentGaps', 'indexation'
+      'simulation', 'employmentGaps', 'indexation',
+      // Results page fields
+      'nominalPension', 'realPension', 'replacementRate', 'averageComparison',
+      'accountGrowth', 'contributionRate'
     ];
     
     const validLanguages = ['en', 'pl'];
@@ -292,7 +295,13 @@ function getIconForField(fieldKey: string): string {
     sickLeave: "🏥",
     simulation: "🎓",
     employmentGaps: "⚠️",
-    indexation: "📉"
+    indexation: "📉",
+    nominalPension: "💵",
+    realPension: "💰",
+    replacementRate: "📊",
+    averageComparison: "📈",
+    accountGrowth: "📈",
+    contributionRate: "💳"
   };
   
   return iconMap[fieldKey] || "💡";
