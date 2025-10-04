@@ -224,7 +224,10 @@ export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en', 
                   >
                     {message.role === "assistant" ? (
                       <div
-                        className="text-sm prose prose-sm max-w-none dark:prose-invert"
+                        className="text-sm prose prose-sm max-w-none dark:prose-invert [&_h3]:text-base [&_h4]:text-sm [&_p]:text-sm [&_li]:text-sm [&_ul]:list-disc [&_ol]:list-decimal"
+                        style={{
+                          fontFamily: 'inherit'
+                        }}
                         dangerouslySetInnerHTML={{
                           __html: DOMPurify.sanitize(message.content, {
                             ALLOWED_TAGS: ['p', 'strong', 'em', 'br', 'ul', 'ol', 'li', 'h3', 'h4', 'span', 'div'],
