@@ -17,12 +17,14 @@ import { useLocale } from "@/contexts/LocaleContext";
 import { EDUCATION_TIPS } from "@/data/educationContent";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
+import { useSessionPoints } from "@/hooks/useSessionPoints";
 import zusLogo from "@/assets/zus-logo.png";
 
 export default function Index() {
   const navigate = useNavigate();
-  const { showTip } = useEducation();
+  const { showTip, showAITip } = useEducation();
   const { t, locale } = useLocale();
+  const { awardPoints, POINT_VALUES } = useSessionPoints();
   const [expectedPension, setExpectedPension] = useState<string>("3000");
 
   const handleExpectedPensionChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,10 +251,35 @@ export default function Index() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div 
-                      className="bg-secondary/30 p-4 rounded-lg border border-border hover:border-primary transition-colors cursor-help focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      className="bg-secondary/30 p-4 rounded-lg border border-border hover:border-primary transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                       role="listitem"
                       tabIndex={0}
                       aria-label={`${group.label}: ${group.amount} PLN average pension. ${group.description}`}
+                      onClick={() => {
+                        // Award points for pension group selection
+                        awardPoints(`pension_group_${group.key}`, POINT_VALUES.CARD_CLICK);
+                        // Show AI-generated educational tip specific to this pension group
+                        showAITip(`pension_group_${group.key}`, {
+                          pensionGroupKey: group.key,
+                          pensionGroupLabel: group.label,
+                          pensionAmount: group.amount,
+                          pensionDescription: group.description,
+                          expectedPension: expectedPension
+                        });
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          awardPoints(`pension_group_${group.key}`, POINT_VALUES.CARD_CLICK);
+                          showAITip(`pension_group_${group.key}`, {
+                            pensionGroupKey: group.key,
+                            pensionGroupLabel: group.label,
+                            pensionAmount: group.amount,
+                            pensionDescription: group.description,
+                            expectedPension: expectedPension
+                          });
+                        }
+                      }}
                     >
                       <div className="text-sm text-muted-foreground mb-1">{group.label}</div>
                       <div className="text-2xl font-bold text-foreground">{group.amount}</div>
