@@ -15,6 +15,11 @@ export interface SimulationInput {
   accountFunds?: number;
   subAccountFunds?: number;
   includeSickLeave: boolean;
+  // Advanced settings
+  customIndexation?: number;
+  historicalSalaries?: Array<{ year: number; amount: number }>;
+  futureSalaries?: Array<{ year: number; amount: number }>;
+  illnessPeriods?: Array<{ startYear: number; endYear: number; days: number }>;
 }
 
 export interface SimulationResult {
@@ -50,9 +55,18 @@ export class PensionEngine {
     const yearsOfWork = input.endYear - input.startYear;
     
     // Calculate contribution basis with sick leave adjustment
-    const sickLeaveImpact = input.includeSickLeave 
+    let sickLeaveImpact = input.includeSickLeave 
       ? SICK_LEAVE_DATA[input.sex].lifetimeAvgDays / 365 
       : 0;
+    
+    // Apply custom illness periods if provided
+    if (input.illnessPeriods && input.illnessPeriods.length > 0) {
+      const totalSickDays = input.illnessPeriods.reduce((sum, period) => {
+        const years = period.endYear - period.startYear;
+        return sum + (period.days * years);
+      }, 0);
+      sickLeaveImpact = totalSickDays / (yearsOfWork * 365);
+    }
     
     const effectiveSalaryMultiplier = 1 - sickLeaveImpact;
     const wageWithIllness = input.grossSalary * effectiveSalaryMultiplier;
@@ -63,7 +77,10 @@ export class PensionEngine {
       input.startYear,
       input.endYear,
       input.grossSalary,
-      effectiveSalaryMultiplier
+      effectiveSalaryMultiplier,
+      input.customIndexation,
+      input.historicalSalaries,
+      input.futureSalaries
     );
     
     // Calculate account balances
@@ -123,25 +140,43 @@ export class PensionEngine {
     startYear: number,
     endYear: number,
     currentSalary: number,
-    effectiveMultiplier: number
+    effectiveMultiplier: number,
+    customIndexation?: number,
+    historicalSalaries?: Array<{ year: number; amount: number }>,
+    futureSalaries?: Array<{ year: number; amount: number }>
   ): number {
     let total = 0;
     const currentYear = new Date().getFullYear();
     
+    // Create salary lookup maps
+    const historicalMap = new Map(historicalSalaries?.map(s => [s.year, s.amount]) || []);
+    const futureMap = new Map(futureSalaries?.map(s => [s.year, s.amount]) || []);
+    
     for (let year = startYear; year < endYear; year++) {
-      // Get wage growth index for this year
-      const wageGrowth = INDEXATION_DATA.wageGrowth[year] || 1.025;
+      let yearSalary: number;
       
-      // Calculate salary for this year (reverse indexation from current)
-      const yearsFromNow = currentYear - year;
-      let yearSalary = currentSalary;
-      
-      if (yearsFromNow > 0) {
-        // Historical - reverse index
-        yearSalary = currentSalary / Math.pow(1.025, yearsFromNow);
-      } else if (yearsFromNow < 0) {
-        // Future - forward index
-        yearSalary = currentSalary * Math.pow(wageGrowth, Math.abs(yearsFromNow));
+      // Check if we have a specific salary for this year
+      if (historicalMap.has(year)) {
+        yearSalary = historicalMap.get(year)!;
+      } else if (futureMap.has(year)) {
+        yearSalary = futureMap.get(year)!;
+      } else {
+        // Get wage growth index for this year
+        const wageGrowth = customIndexation 
+          ? (1 + customIndexation / 100) 
+          : (INDEXATION_DATA.wageGrowth[year] || 1.025);
+        
+        // Calculate salary for this year (reverse indexation from current)
+        const yearsFromNow = currentYear - year;
+        yearSalary = currentSalary;
+        
+        if (yearsFromNow > 0) {
+          // Historical - reverse index
+          yearSalary = currentSalary / Math.pow(customIndexation ? (1 + customIndexation / 100) : 1.025, yearsFromNow);
+        } else if (yearsFromNow < 0) {
+          // Future - forward index
+          yearSalary = currentSalary * Math.pow(wageGrowth, Math.abs(yearsFromNow));
+        }
       }
       
       // Apply sick leave multiplier

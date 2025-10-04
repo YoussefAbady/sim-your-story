@@ -74,16 +74,21 @@ export default function Results() {
     runSimulation(input);
   }, [navigate]);
 
-  // Re-run simulation when advanced settings change
-  useEffect(() => {
-    if (simulationInput) {
-      runSimulation(simulationInput);
-    }
-  }, [historicalSalaries, futureSalaries, illnessPeriods, customIndexation]);
-
   const runSimulation = (input: SimulationInput) => {
-    // TODO: Apply advanced settings to input before simulation
-    const simulationResults = PensionEngine.simulate(input);
+    // Apply advanced settings to the simulation input
+    const enhancedInput: SimulationInput = {
+      ...input,
+      customIndexation,
+      historicalSalaries: historicalSalaries.map(s => ({ year: s.year, amount: s.amount })),
+      futureSalaries: futureSalaries.map(s => ({ year: s.year, amount: s.amount })),
+      illnessPeriods: illnessPeriods.map(p => ({ 
+        startYear: p.startYear, 
+        endYear: p.endYear, 
+        days: p.days 
+      }))
+    };
+    
+    const simulationResults = PensionEngine.simulate(enhancedInput);
     setResults(simulationResults);
   };
 
@@ -92,7 +97,7 @@ export default function Results() {
     
     setIsUpdating(true);
     
-    // Simulate a brief calculation delay for better UX
+    // Run simulation with updated settings
     setTimeout(() => {
       runSimulation(simulationInput);
       setIsUpdating(false);
