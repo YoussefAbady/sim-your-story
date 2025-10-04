@@ -46,7 +46,8 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
 
   const handleChatOpen = () => {
     setIsChatOpen(true);
-    handleClose();
+    setIsExpanded(false);
+    hideTip(); // Close the popup when opening chat
   };
 
   // Hide global instance on results page (Results.tsx has its own positioned instance)
