@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, ArrowLeft, Calendar, User, DollarSign, Filter } from "lucide-react";
+import { Download, ArrowLeft, Calendar, User, DollarSign, Filter, Clock, Activity, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import * as XLSX from 'xlsx';
@@ -71,6 +71,7 @@ export default function AdminReports() {
   const [logs, setLogs] = useState<SimulationLog[]>([]);
   const [filteredLogs, setFilteredLogs] = useState<SimulationLog[]>([]);
   const [sessions, setSessions] = useState<SessionTime[]>([]);
+  const [filteredSessions, setFilteredSessions] = useState<SessionTime[]>([]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'simulations' | 'sessions' | 'quizzes'>('simulations');
@@ -78,6 +79,9 @@ export default function AdminReports() {
   const [filterIllness, setFilterIllness] = useState<string>("all");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+  const [sessionStartDate, setSessionStartDate] = useState<string>("");
+  const [sessionEndDate, setSessionEndDate] = useState<string>("");
+  const [sessionPageFilter, setSessionPageFilter] = useState<string>("all");
 
   useEffect(() => {
     fetchAllData();
@@ -86,6 +90,10 @@ export default function AdminReports() {
   useEffect(() => {
     applyFilters();
   }, [logs, filterSex, filterIllness, startDate, endDate]);
+
+  useEffect(() => {
+    applySessionFilters();
+  }, [sessions, sessionStartDate, sessionEndDate, sessionPageFilter]);
 
   const fetchAllData = async () => {
     setIsLoading(true);
@@ -181,6 +189,62 @@ export default function AdminReports() {
     setFilteredLogs(filtered);
   };
 
+  const applySessionFilters = () => {
+    let filtered = [...sessions];
+
+    // Filter by date range
+    if (sessionStartDate) {
+      filtered = filtered.filter(session => 
+        new Date(session.start_time).toISOString().split('T')[0] >= sessionStartDate
+      );
+    }
+    if (sessionEndDate) {
+      filtered = filtered.filter(session => 
+        new Date(session.start_time).toISOString().split('T')[0] <= sessionEndDate
+      );
+    }
+
+    // Filter by page
+    if (sessionPageFilter !== "all") {
+      filtered = filtered.filter(session => session.page_path === sessionPageFilter);
+    }
+
+    setFilteredSessions(filtered);
+  };
+
+  const getSessionInsights = () => {
+    if (filteredSessions.length === 0) {
+      return { avgDuration: 0, totalSessions: 0, avgSessionsPerWeek: 0, uniqueUsers: 0 };
+    }
+
+    const totalDuration = filteredSessions.reduce((sum, session) => 
+      sum + (session.duration_seconds || 0), 0
+    );
+    const avgDuration = Math.round(totalDuration / filteredSessions.length / 60); // in minutes
+
+    // Calculate date range
+    const dates = filteredSessions.map(s => new Date(s.start_time).getTime());
+    const minDate = Math.min(...dates);
+    const maxDate = Math.max(...dates);
+    const weeksDiff = Math.max(1, (maxDate - minDate) / (7 * 24 * 60 * 60 * 1000));
+    const avgSessionsPerWeek = Math.round(filteredSessions.length / weeksDiff);
+
+    // Count unique users
+    const uniqueUsers = new Set(filteredSessions.map(s => s.user_identifier).filter(Boolean)).size;
+
+    return {
+      avgDuration,
+      totalSessions: filteredSessions.length,
+      avgSessionsPerWeek,
+      uniqueUsers
+    };
+  };
+
+  const getUniquePages = () => {
+    const pages = new Set(sessions.map(s => s.page_path).filter(Boolean));
+    return Array.from(pages);
+  };
+
   const exportToExcel = () => {
     const exportData = filteredLogs.map(log => ({
       'Date of Use': log.date_of_use,
@@ -228,6 +292,12 @@ export default function AdminReports() {
     setFilterIllness("all");
     setStartDate("");
     setEndDate("");
+  };
+
+  const clearSessionFilters = () => {
+    setSessionStartDate("");
+    setSessionEndDate("");
+    setSessionPageFilter("all");
   };
 
   return (
@@ -431,45 +501,148 @@ export default function AdminReports() {
         )}
 
         {activeTab === 'sessions' && (
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Session Time Records</h2>
-            {isLoading ? (
-              <p className="text-center text-muted-foreground py-8">Loading...</p>
-            ) : sessions.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">No session records found</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Session ID</TableHead>
-                      <TableHead>User</TableHead>
-                      <TableHead>Start Time</TableHead>
-                      <TableHead>End Time</TableHead>
-                      <TableHead>Duration (min)</TableHead>
-                      <TableHead>Page</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sessions.map((session) => (
-                      <TableRow key={session.id}>
-                        <TableCell className="font-mono text-xs">{session.session_id.substring(0, 8)}...</TableCell>
-                        <TableCell>{session.user_identifier || 'Anonymous'}</TableCell>
-                        <TableCell>{new Date(session.start_time).toLocaleString()}</TableCell>
-                        <TableCell>{session.end_time ? new Date(session.end_time).toLocaleString() : 'Active'}</TableCell>
-                        <TableCell>
-                          {session.duration_seconds 
-                            ? Math.round(session.duration_seconds / 60) 
-                            : '-'}
-                        </TableCell>
-                        <TableCell>{session.page_path || '-'}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+          <>
+            {/* Session Filters */}
+            <Card className="p-6 mb-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Filter className="w-5 h-5 text-primary" />
+                <h2 className="text-xl font-semibold text-foreground">Filters</h2>
               </div>
-            )}
-          </Card>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="sessionStartDate">Start Date</Label>
+                  <Input
+                    id="sessionStartDate"
+                    type="date"
+                    value={sessionStartDate}
+                    onChange={(e) => setSessionStartDate(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sessionEndDate">End Date</Label>
+                  <Input
+                    id="sessionEndDate"
+                    type="date"
+                    value={sessionEndDate}
+                    onChange={(e) => setSessionEndDate(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sessionPageFilter">Page</Label>
+                  <Select value={sessionPageFilter} onValueChange={setSessionPageFilter}>
+                    <SelectTrigger id="sessionPageFilter">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Pages</SelectItem>
+                      {getUniquePages().map(page => (
+                        <SelectItem key={page} value={page}>{page}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex justify-end mt-4">
+                <Button variant="outline" onClick={clearSessionFilters}>
+                  Clear Filters
+                </Button>
+              </div>
+            </Card>
+
+            {/* Session Insights */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+              <Card className="p-6">
+                <div className="flex items-center gap-3">
+                  <Activity className="w-8 h-8 text-primary" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Total Sessions</p>
+                    <p className="text-2xl font-bold text-foreground">{getSessionInsights().totalSessions}</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center gap-3">
+                  <Clock className="w-8 h-8 text-primary" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Avg. Session Time</p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {getSessionInsights().avgDuration} min
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="w-8 h-8 text-primary" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Sessions/Week</p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {getSessionInsights().avgSessionsPerWeek}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center gap-3">
+                  <User className="w-8 h-8 text-primary" />
+                  <div>
+                    <p className="text-sm text-muted-foreground">Unique Users</p>
+                    <p className="text-2xl font-bold text-foreground">
+                      {getSessionInsights().uniqueUsers}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Session Table */}
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">Session Time Records</h2>
+              {isLoading ? (
+                <p className="text-center text-muted-foreground py-8">Loading...</p>
+              ) : filteredSessions.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">No session records found</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Session ID</TableHead>
+                        <TableHead>User</TableHead>
+                        <TableHead>Start Time</TableHead>
+                        <TableHead>End Time</TableHead>
+                        <TableHead>Duration (min)</TableHead>
+                        <TableHead>Page</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredSessions.map((session) => (
+                        <TableRow key={session.id}>
+                          <TableCell className="font-mono text-xs">{session.session_id.substring(0, 8)}...</TableCell>
+                          <TableCell className="truncate max-w-[120px]" title={session.user_identifier || 'Anonymous'}>
+                            {session.user_identifier ? session.user_identifier.substring(0, 12) + '...' : 'Anonymous'}
+                          </TableCell>
+                          <TableCell>{new Date(session.start_time).toLocaleString()}</TableCell>
+                          <TableCell>{session.end_time ? new Date(session.end_time).toLocaleString() : 'Active'}</TableCell>
+                          <TableCell>
+                            {session.duration_seconds 
+                              ? Math.round(session.duration_seconds / 60) 
+                              : '-'}
+                          </TableCell>
+                          <TableCell>{session.page_path || '-'}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </Card>
+          </>
         )}
 
         {activeTab === 'quizzes' && (
