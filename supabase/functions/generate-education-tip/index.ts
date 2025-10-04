@@ -29,7 +29,7 @@ RULES:
 - Focus on practical implications
 - Include relevant numbers when possible
 - Be encouraging and informative
-- Always respond in the same language as the user's context`;
+- ALWAYS respond in English`;
 
     const userContext = buildUserContext(fieldKey, userData);
 
