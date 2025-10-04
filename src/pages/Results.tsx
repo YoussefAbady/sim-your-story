@@ -42,6 +42,7 @@ import { EducationalCard } from "@/components/education/EducationalCard";
 import { useEducation } from "@/contexts/EducationContext";
 import { EDUCATION_TIPS } from "@/data/educationContent";
 import { useLocale } from "@/contexts/LocaleContext";
+import { AnimatedBackground } from "@/components/ui/animated-background";
 
 export interface SalaryPeriod {
   id: string;
@@ -200,7 +201,8 @@ export default function Results() {
 
   return (
     <SidebarProvider defaultOpen={false}>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-secondary/20 to-background relative overflow-hidden">
+        <AnimatedBackground variant="orbs" className="opacity-40" />
         <div className="flex-1 flex flex-col min-h-screen">
           <header className="border-b border-border bg-card sticky top-0 z-10">
             <div className="container mx-auto px-4 py-6">
