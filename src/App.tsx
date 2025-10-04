@@ -22,10 +22,10 @@ const App = () => (
       <EducationProvider>
         <TooltipProvider>
           <Sonner position="top-right" />
-          <EducationTipDisplay sidebarOpen={false} />
           <BadgeCollection />
           <SessionSummary />
           <BrowserRouter>
+            <EducationTipDisplay sidebarOpen={false} />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/simulation" element={<Simulation />} />
