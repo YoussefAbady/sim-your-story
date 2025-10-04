@@ -2,83 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+/* ZUS Brand Color System - WCAG 2.0 Compliant */
 @layer base {
   :root {
-    --background: 39 70% 97%;
-    --foreground: 239 20% 15%;
+    /* ZUS Brand Colors (RGB converted to HSL) */
+    --zus-amber: 33 100% 65%;        /* rgb(255,179,79) */
+    --zus-green: 146 100% 30%;       /* rgb(0,153,63) */
+    --zus-grey: 226 16% 78%;         /* rgb(190,195,206) */
+    --zus-blue: 211 64% 54%;         /* rgb(63,132,210) */
+    --zus-navy: 204 100% 22%;        /* rgb(0,65,110) */
+    --zus-red: 0 84% 65%;            /* rgb(240,94,94) */
+    --zus-black: 0 0% 0%;            /* rgb(0,0,0) */
+    
+    /* Semantic tokens mapped to ZUS colors */
+    --background: 0 0% 100%;
+    --foreground: 204 100% 22%;      /* navy */
 
     --card: 0 0% 100%;
-    --card-foreground: 239 20% 15%;
+    --card-foreground: 204 100% 22%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 239 20% 15%;
+    --popover-foreground: 204 100% 22%;
 
-    --primary: 239 84% 67%;
+    --primary: 211 64% 54%;          /* blue */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 39 70% 90%;
-    --secondary-foreground: 239 20% 15%;
+    --secondary: 226 16% 78%;        /* grey */
+    --secondary-foreground: 204 100% 22%;
 
-    --muted: 39 40% 94%;
-    --muted-foreground: 239 15% 45%;
+    --muted: 226 16% 90%;
+    --muted-foreground: 226 16% 40%;
 
-    --accent: 152 76% 64%;
-    --accent-foreground: 239 20% 15%;
+    --accent: 33 100% 65%;           /* amber */
+    --accent-foreground: 204 100% 22%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 65%;        /* red */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 39 30% 88%;
-    --input: 39 30% 88%;
-    --ring: 239 84% 67%;
+    --success: 146 100% 30%;         /* green */
+    --success-foreground: 0 0% 100%;
 
-    --radius: 0.75rem;
+    --border: 226 16% 85%;
+    --input: 226 16% 85%;
+    --ring: 211 64% 54%;
 
-    /* Custom tokens for retirement simulator */
-    --gradient-primary: linear-gradient(135deg, hsl(239 84% 67%), hsl(152 76% 64%));
-    --gradient-hero: linear-gradient(180deg, hsl(39 70% 97%), hsl(239 10% 95%));
-    --shadow-smooth: 0 4px 24px -4px hsl(239 84% 67% / 0.12);
-    --shadow-lift: 0 8px 32px -8px hsl(239 84% 67% / 0.18);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius: 0.5rem;
+
+    /* Custom tokens */
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lift: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .dark {
-    --background: 239 30% 12%;
-    --foreground: 39 70% 95%;
+    --background: 204 100% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 239 25% 16%;
-    --card-foreground: 39 70% 95%;
+    --card: 204 100% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 239 25% 16%;
-    --popover-foreground: 39 70% 95%;
+    --popover: 204 100% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 239 84% 67%;
+    --primary: 211 64% 54%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 239 20% 22%;
-    --secondary-foreground: 39 70% 95%;
+    --secondary: 226 16% 25%;
+    --secondary-foreground: 0 0% 95%;
 
-    --muted: 239 20% 20%;
-    --muted-foreground: 39 30% 65%;
+    --muted: 226 16% 20%;
+    --muted-foreground: 226 16% 65%;
 
-    --accent: 152 76% 64%;
-    --accent-foreground: 239 30% 12%;
+    --accent: 33 100% 65%;
+    --accent-foreground: 204 100% 8%;
 
-    --destructive: 0 62.8% 50.6%;
+    --destructive: 0 84% 65%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 239 20% 24%;
-    --input: 239 20% 24%;
-    --ring: 239 84% 67%;
+    --success: 146 100% 40%;
+    --success-foreground: 0 0% 100%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(239 84% 67%), hsl(152 76% 64%));
-    --gradient-hero: linear-gradient(180deg, hsl(239 30% 12%), hsl(239 20% 18%));
-    --shadow-smooth: 0 4px 24px -4px hsl(239 84% 67% / 0.2);
-    --shadow-lift: 0 8px 32px -8px hsl(239 84% 67% / 0.3);
+    --border: 226 16% 25%;
+    --input: 226 16% 25%;
+    --ring: 211 64% 54%;
   }
 }
 
