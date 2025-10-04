@@ -460,14 +460,14 @@ export default function Results() {
             className="mb-8"
           >
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Your Expected Pension Goal</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">{t('results.expectedGoal')}</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">You wanted:</span>
+                  <span className="text-muted-foreground">{t('results.youWanted')}</span>
                   <span className="font-semibold">{expectedPension.toLocaleString('pl-PL')} PLN</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">You'll get:</span>
+                  <span className="text-muted-foreground">{t('results.youWillGet')}</span>
                   <span className="font-semibold">{results.actualPension.toLocaleString('pl-PL')} PLN</span>
                 </div>
                 <div className="pt-2 border-t border-border">
@@ -475,7 +475,7 @@ export default function Results() {
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-5 h-5 text-zus-green" aria-hidden="true" />
                       <span className="text-zus-green font-semibold">
-                        You'll exceed your goal! 🎉
+                        {t('results.exceedGoal')}
                       </span>
                     </div>
                   ) : (
@@ -483,16 +483,16 @@ export default function Results() {
                       <div className="flex items-center gap-2 mb-2">
                         <TrendingDown className="w-5 h-5 text-zus-red" aria-hidden="true" />
                         <span className="text-zus-red font-semibold">
-                          Shortfall: {(expectedPension - results.actualPension).toLocaleString('pl-PL')} PLN/month
+                          {t('results.shortfall').replace('{amount}', (expectedPension - results.actualPension).toLocaleString('pl-PL'))}
                         </span>
                       </div>
                       {yearsNeeded !== undefined ? (
                         <p className="text-sm text-muted-foreground">
-                          To reach your goal, you would need to work approximately <strong>{yearsNeeded} more year{yearsNeeded !== 1 ? 's' : ''}</strong> beyond your planned retirement.
+                          {t('results.yearsNeeded').replace('{years}', String(yearsNeeded))}
                         </p>
                       ) : (
                         <p className="text-sm text-muted-foreground">
-                          Your expected pension may not be achievable within a reasonable timeframe with current salary levels.
+                          {t('results.notAchievable')}
                         </p>
                       )}
                     </div>
@@ -505,7 +505,7 @@ export default function Results() {
 
         {/* Did You Know? */}
         <Card className="p-6 bg-zus-blue/5 border-zus-blue">
-          <h3 className="text-lg font-semibold text-foreground mb-3">💡 Did You Know?</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-3">💡 {t('education.didYouKnow')}</h3>
           <p className="text-foreground">{randomFact}</p>
         </Card>
 
@@ -517,28 +517,28 @@ export default function Results() {
                 size="lg"
                 className="gap-2"
               >
-                Run New Simulation
+                {t('results.runNewSimulation')}
               </Button>
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button size="lg" className="gap-2">
                     <Download className="w-4 h-4" />
-                    Export Report
+                    {t('results.exportReport')}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-48">
                   <DropdownMenuItem onClick={handleDownloadReport} className="gap-2 cursor-pointer">
                     <Download className="w-4 h-4" />
-                    Download
+                    {t('results.download')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setEmailDialogOpen(true)} className="gap-2 cursor-pointer">
                     <Mail className="w-4 h-4" />
-                    Email Report
+                    {t('results.emailReport')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleViewReport} className="gap-2 cursor-pointer">
                     <Eye className="w-4 h-4" />
-                    View Report
+                    {t('results.viewReport')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -553,9 +553,7 @@ export default function Results() {
             {/* Data Source Footer */}
             <footer className="mt-12 pt-6 border-t border-border">
               <p className="text-xs text-muted-foreground text-center">
-                Data source: ZUS Forecast of Pension Fund Revenues and Expenditures 2023-2080 
-                (Department of Statistics & Actuarial Forecasts) | 
-                Additional sources: GUS, NBP, Ministry of Finance
+                {t('results.dataSource')}
               </p>
             </footer>
           </main>
@@ -565,7 +563,7 @@ export default function Results() {
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Settings className="w-5 h-5" />
-              <span className="font-semibold">Edit Forecast Options</span>
+              <span className="font-semibold">{t('results.sidebar.editOptions')}</span>
             </div>
             <SidebarTrigger />
           </div>
@@ -578,7 +576,7 @@ export default function Results() {
                 size="lg"
               >
                 <RefreshCw className={`w-4 h-4 ${isUpdating ? 'animate-spin' : ''}`} />
-                {isUpdating ? 'Updating...' : 'Update Forecast'}
+                {isUpdating ? t('results.sidebar.updating') : t('results.sidebar.updateForecast')}
               </Button>
               <Button 
                 onClick={handleResetChanges}
@@ -586,26 +584,26 @@ export default function Results() {
                 className="w-full"
                 size="lg"
               >
-                Reset All Changes
+                {t('results.sidebar.resetAllChanges')}
               </Button>
             </div>
             <SidebarGroup>
               <SidebarGroupContent>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                   <TabsList className="grid w-full grid-cols-2 mb-4">
-                    <TabsTrigger value="growth" className="text-xs">Growth</TabsTrigger>
-                    <TabsTrigger value="historical" className="text-xs">History</TabsTrigger>
+                    <TabsTrigger value="growth" className="text-xs">{t('results.sidebar.tabs.growth')}</TabsTrigger>
+                    <TabsTrigger value="historical" className="text-xs">{t('results.sidebar.tabs.history')}</TabsTrigger>
                   </TabsList>
                   <TabsList className="grid w-full grid-cols-2 mb-4">
-                    <TabsTrigger value="future" className="text-xs">Future</TabsTrigger>
-                    <TabsTrigger value="illness" className="text-xs">Illness</TabsTrigger>
+                    <TabsTrigger value="future" className="text-xs">{t('results.sidebar.tabs.future')}</TabsTrigger>
+                    <TabsTrigger value="illness" className="text-xs">{t('results.sidebar.tabs.illness')}</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="growth" className="space-y-4 px-2">
                     <div>
-                      <h3 className="text-sm font-semibold mb-2">Account Growth</h3>
+                      <h3 className="text-sm font-semibold mb-2">{t('results.sidebar.growthHeader')}</h3>
                       <p className="text-xs text-muted-foreground mb-4">
-                        Main & sub-account from {simulationInput?.startYear} to {simulationInput?.endYear}
+                        {t('results.sidebar.growthDesc').replace('{start}', String(simulationInput?.startYear ?? '—')).replace('{end}', String(simulationInput?.endYear ?? '—'))}
                       </p>
                       {simulationInput && (
                         <div className="w-full h-[300px]">
@@ -617,9 +615,9 @@ export default function Results() {
 
                   <TabsContent value="historical" className="space-y-4 px-2">
                     <div>
-                      <h3 className="text-sm font-semibold mb-2">Historical Salaries</h3>
+                      <h3 className="text-sm font-semibold mb-2">{t('results.sidebar.historicalHeader')}</h3>
                       <p className="text-xs text-muted-foreground mb-4">
-                        Enter specific past salaries
+                        {t('results.sidebar.historicalDesc')}
                       </p>
                       {simulationInput && (
                         <HistoricalSalaryInput
@@ -633,16 +631,16 @@ export default function Results() {
 
                   <TabsContent value="future" className="space-y-4 px-2">
                     <div>
-                      <h3 className="text-sm font-semibold mb-2">Future Projections</h3>
+                      <h3 className="text-sm font-semibold mb-2">{t('results.sidebar.futureHeader')}</h3>
                       <div className="mb-4">
                         <Label htmlFor="custom-indexation" className="text-xs">
-                          Custom Growth Rate (%)
+                          {t('results.sidebar.customGrowthRate')}
                         </Label>
                         <EducationalInput
                           id="custom-indexation"
                           type="number"
                           step="0.1"
-                          placeholder="e.g., 3.5"
+                          placeholder={t('results.sidebar.placeholderExample')}
                           value={customIndexation ?? ""}
                           onChange={(e) => setCustomIndexation(e.target.value ? parseFloat(e.target.value) : null)}
                           className="mt-1"
@@ -661,9 +659,9 @@ export default function Results() {
 
                   <TabsContent value="illness" className="space-y-4 px-2">
                     <div>
-                      <h3 className="text-sm font-semibold mb-2">Illness Periods</h3>
+                      <h3 className="text-sm font-semibold mb-2">{t('results.sidebar.illnessHeader')}</h3>
                       <p className="text-xs text-muted-foreground mb-4">
-                        Specify past & future illness
+                        {t('results.sidebar.illnessDesc')}
                       </p>
                       {simulationInput && (
                         <IllnessPeriodInput
