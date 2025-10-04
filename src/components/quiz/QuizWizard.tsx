@@ -83,30 +83,29 @@ export const QuizWizard = ({ open, onOpenChange }: QuizWizardProps) => {
   const handleAnswerSelect = (answerIndex: number) => {
     if (showResult) return;
     setSelectedAnswer(answerIndex);
-  };
-
-  const handleSubmitAnswer = () => {
-    if (selectedAnswer === null) return;
-
-    const isCorrect = selectedAnswer === currentQuestion.correctAnswer;
+    
+    // Auto-submit after selection
+    const isCorrect = answerIndex === currentQuestion.correctAnswer;
     setShowResult(true);
     
     if (isCorrect) {
       setCorrectAnswers(prev => prev + 1);
     }
     
-    setUserAnswers(prev => [...prev, selectedAnswer]);
+    setUserAnswers(prev => [...prev, answerIndex]);
+    
+    // Auto-advance after 2 seconds
+    setTimeout(() => {
+      if (currentStep < QUIZ_QUESTIONS.length - 1) {
+        setCurrentStep(prev => prev + 1);
+        setSelectedAnswer(null);
+        setShowResult(false);
+      } else {
+        handleQuizComplete();
+      }
+    }, 2000);
   };
 
-  const handleNext = () => {
-    if (currentStep < QUIZ_QUESTIONS.length - 1) {
-      setCurrentStep(prev => prev + 1);
-      setSelectedAnswer(null);
-      setShowResult(false);
-    } else {
-      handleQuizComplete();
-    }
-  };
 
   const handleQuizComplete = async () => {
     const finalCorrectCount = correctAnswers + (selectedAnswer === currentQuestion.correctAnswer ? 1 : 0);
@@ -276,19 +275,10 @@ export const QuizWizard = ({ open, onOpenChange }: QuizWizardProps) => {
             </motion.div>
           </AnimatePresence>
 
-          <div className="flex justify-between pt-4">
+          <div className="flex justify-end pt-4">
             <Button variant="outline" onClick={handleClose}>
               Exit Quiz
             </Button>
-            {!showResult ? (
-              <Button onClick={handleSubmitAnswer} disabled={selectedAnswer === null}>
-                Submit Answer
-              </Button>
-            ) : (
-              <Button onClick={handleNext}>
-                {currentStep < QUIZ_QUESTIONS.length - 1 ? "Next Question" : "Finish Quiz"}
-              </Button>
-            )}
           </div>
         </div>
       </DialogContent>

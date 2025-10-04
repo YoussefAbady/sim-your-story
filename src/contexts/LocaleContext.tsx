@@ -61,6 +61,7 @@ const translations: Record<Locale, any> = {
       simulator: 'Simulator',
       education: 'Education',
       reports: 'Reports',
+      adminPanel: 'Admin Panel',
     },
     hero: {
       badge: 'AI-Powered Financial Education',
@@ -332,6 +333,7 @@ const translations: Record<Locale, any> = {
       simulator: 'Symulator',
       education: 'Edukacja',
       reports: 'Raporty',
+      adminPanel: 'Panel Administratora',
     },
     hero: {
       badge: 'Edukacja Finansowa Wspierana przez AI',

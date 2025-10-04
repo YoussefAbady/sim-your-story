@@ -142,7 +142,7 @@ export default function Index() {
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
             <Button onClick={() => navigate('/admin/reports')} variant="outline">
-              Admin Panel
+              {t('nav.adminPanel')}
             </Button>
           </div>
         </div>
