@@ -21,6 +21,8 @@ import {
   SidebarGroupLabel,
   SidebarProvider,
   SidebarTrigger,
+  SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AccountGrowthChart } from "@/components/dashboard/AccountGrowthChart";
@@ -364,7 +366,8 @@ export default function Results() {
           </main>
         </div>
 
-        <Sidebar side="right" className="border-l" collapsible="offcanvas">
+        <Sidebar side="right" className="border-l w-80" collapsible="offcanvas" style={{ minWidth: '320px', maxWidth: '600px' }}>
+          <SidebarRail />
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Settings className="w-5 h-5" />
