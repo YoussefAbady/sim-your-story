@@ -74,10 +74,11 @@ export default function AdminReports() {
   const [sessions, setSessions] = useState<SessionTime[]>([]);
   const [filteredSessions, setFilteredSessions] = useState<SessionTime[]>([]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  const [redeems, setRedeems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
   const [isAdmin, setIsAdmin] = useState(true); // Demo mode - no auth required
-  const [activeTab, setActiveTab] = useState<'simulations' | 'sessions' | 'quizzes'>('simulations');
+  const [activeTab, setActiveTab] = useState<'simulations' | 'sessions' | 'quizzes' | 'redeems'>('simulations');
   const [filterSex, setFilterSex] = useState<string>("all");
   const [filterIllness, setFilterIllness] = useState<string>("all");
   const [startDate, setStartDate] = useState<string>("");
@@ -159,7 +160,7 @@ export default function AdminReports() {
   const fetchAllData = async () => {
     setIsLoading(true);
     try {
-      await Promise.all([fetchLogs(), fetchSessions(), fetchQuizzes()]);
+      await Promise.all([fetchLogs(), fetchSessions(), fetchQuizzes(), fetchRedeems()]);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -219,6 +220,25 @@ export default function AdminReports() {
       toast({
         title: "Error loading quizzes",
         description: "Failed to fetch quiz data.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchRedeems = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('prize_redeems')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setRedeems(data || []);
+    } catch (error) {
+      console.error('Error fetching redeems:', error);
+      toast({
+        title: "Error loading redeems",
+        description: "Failed to fetch prize redemption data.",
         variant: "destructive",
       });
     }
@@ -399,6 +419,12 @@ export default function AdminReports() {
             onClick={() => setActiveTab('quizzes')}
           >
             {t('admin.quizzes')}
+          </Button>
+          <Button
+            variant={activeTab === 'redeems' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('redeems')}
+          >
+            Prize Redeems
           </Button>
         </div>
 
@@ -713,6 +739,42 @@ export default function AdminReports() {
                         </TableCell>
                         <TableCell>{quiz.total_questions || '-'}</TableCell>
                         <TableCell>{new Date(quiz.completed_at).toLocaleString()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </Card>
+        )}
+
+        {activeTab === 'redeems' && (
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Prize Redeems</h2>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground py-8">{t('admin.loading')}</p>
+            ) : redeems.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No prize redeems yet</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Points Redeemed</TableHead>
+                      <TableHead>Badges Earned</TableHead>
+                      <TableHead>Allow Contact</TableHead>
+                      <TableHead>Redeemed At</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {redeems.map((redeem) => (
+                      <TableRow key={redeem.id}>
+                        <TableCell>{redeem.user_email || 'N/A'}</TableCell>
+                        <TableCell>{redeem.session_points}</TableCell>
+                        <TableCell>{redeem.badges_count}</TableCell>
+                        <TableCell>{redeem.allow_contact ? 'Yes' : 'No'}</TableCell>
+                        <TableCell>{new Date(redeem.created_at).toLocaleString()}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

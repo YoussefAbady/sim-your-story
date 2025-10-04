@@ -71,6 +71,33 @@ export type Database = {
         }
         Relationships: []
       }
+      prize_redeems: {
+        Row: {
+          allow_contact: boolean
+          badges_count: number
+          created_at: string
+          id: string
+          session_points: number
+          user_email: string | null
+        }
+        Insert: {
+          allow_contact?: boolean
+          badges_count?: number
+          created_at?: string
+          id?: string
+          session_points: number
+          user_email?: string | null
+        }
+        Update: {
+          allow_contact?: boolean
+          badges_count?: number
+          created_at?: string
+          id?: string
+          session_points?: number
+          user_email?: string | null
+        }
+        Relationships: []
+      }
       quizzes: {
         Row: {
           answers: Json | null

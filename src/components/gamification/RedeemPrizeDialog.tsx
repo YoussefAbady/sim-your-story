@@ -7,6 +7,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Gift, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { clearSessionPoints } from "@/services/sessionPointsService";
+import { supabase } from "@/integrations/supabase/client";
+import { useGamification } from "@/contexts/GamificationContext";
 
 interface RedeemPrizeDialogProps {
   open: boolean;
@@ -18,6 +20,7 @@ export const RedeemPrizeDialog = ({ open, onOpenChange, currentPoints }: RedeemP
   const [email, setEmail] = useState("");
   const [allowContact, setAllowContact] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { earnedBadges } = useGamification();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,9 +34,20 @@ export const RedeemPrizeDialog = ({ open, onOpenChange, currentPoints }: RedeemP
 
     setIsLoading(true);
     try {
-      // TODO: Implement prize redemption via edge function
-      // For now, simulate sending
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Save redeem record to database
+      const { error: dbError } = await supabase
+        .from('prize_redeems')
+        .insert({
+          user_email: allowContact ? email : null,
+          session_points: currentPoints,
+          badges_count: earnedBadges.length,
+          allow_contact: allowContact,
+        });
+
+      if (dbError) {
+        console.error('Error saving redeem record:', dbError);
+        throw dbError;
+      }
       
       toast.success("Prize redeemed!", {
         description: `Your gift for ${currentPoints} points will be sent to ${email}`,
