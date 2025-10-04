@@ -77,6 +77,11 @@ export default function Index() {
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-6 flex items-center gap-6">
           <img 
+            src="/src/assets/logo.png" 
+            alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+            className="h-16 md:h-20 w-auto"
+          />
+          <img 
             src="/src/assets/zus-logo.png" 
             alt="ZUS - Zakład Ubezpieczeń Społecznych" 
             className="h-16 md:h-20 w-auto"
