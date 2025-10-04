@@ -179,6 +179,7 @@ export type Database = {
           duration_seconds: number | null
           end_time: string | null
           id: string
+          page_path: string | null
           session_id: string
           start_time: string
           user_identifier: string | null
@@ -188,6 +189,7 @@ export type Database = {
           duration_seconds?: number | null
           end_time?: string | null
           id?: string
+          page_path?: string | null
           session_id: string
           start_time?: string
           user_identifier?: string | null
@@ -197,6 +199,7 @@ export type Database = {
           duration_seconds?: number | null
           end_time?: string | null
           id?: string
+          page_path?: string | null
           session_id?: string
           start_time?: string
           user_identifier?: string | null
