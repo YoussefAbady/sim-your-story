@@ -92,14 +92,6 @@ export default function Index() {
             <h1 className="text-3xl font-bold text-foreground">Retirement Education Center</h1>
             <p className="text-sm text-muted-foreground mt-1">Learn about your pension while planning your future</p>
           </div>
-          <Button 
-            variant="outline" 
-            className="gap-2"
-            onClick={() => showTip(EDUCATION_TIPS.simulation)}
-          >
-            <BookOpen className="w-4 h-4" />
-            Learning Guide
-          </Button>
         </div>
       </header>
 
