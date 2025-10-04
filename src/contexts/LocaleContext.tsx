@@ -60,9 +60,13 @@ const translations: Record<Locale, any> = {
       reports: 'Reports',
     },
     hero: {
-      title: 'Plan Your Future Pension',
-      subtitle: 'Calculate your retirement benefits with our advanced ZUS simulator',
-      cta: 'Start Calculating',
+      badge: 'AI-Powered Financial Education',
+      title: 'See Your Financial Future',
+      subtitle: 'Slide through life, watch your choices unfold. An interactive simulator that makes retirement planning feel real, engaging, and personal.',
+      cta: 'Start Your Simulation',
+      demo: 'Watch Demo',
+      simulations: 'simulations run',
+      liveAI: 'Live AI Analysis',
     },
     features: {
       title: 'Why Use Our Calculator',
@@ -149,9 +153,13 @@ const translations: Record<Locale, any> = {
       reports: 'Raporty',
     },
     hero: {
-      title: 'Zaplanuj Swoją Przyszłą Emeryturę',
-      subtitle: 'Oblicz swoje świadczenia emerytalne z naszym zaawansowanym symulatorem ZUS',
-      cta: 'Rozpocznij Obliczenia',
+      badge: 'Edukacja Finansowa Wspierana przez AI',
+      title: 'Zobacz Swoją Finansową Przyszłość',
+      subtitle: 'Przechodź przez życie, obserwuj swoje wybory. Interaktywny symulator, który sprawia, że planowanie emerytury jest realne, angażujące i osobiste.',
+      cta: 'Rozpocznij Symulację',
+      demo: 'Zobacz Demo',
+      simulations: 'wykonanych symulacji',
+      liveAI: 'Analiza AI na Żywo',
     },
     features: {
       title: 'Dlaczego Warto Użyć Naszego Kalkulatora',

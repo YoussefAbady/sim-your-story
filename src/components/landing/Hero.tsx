@@ -2,9 +2,12 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLocale } from "@/contexts/LocaleContext";
 import heroImage from "@/assets/hero-timeline.jpg";
 
 export const Hero = () => {
+  const { t } = useLocale();
+  
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-background to-secondary/30">
       {/* Animated background elements */}
@@ -51,7 +54,7 @@ export const Hero = () => {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20"
             >
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">AI-Powered Financial Education</span>
+              <span className="text-sm font-medium text-primary">{t('hero.badge')}</span>
             </motion.div>
 
             <div className="space-y-4">
@@ -61,10 +64,7 @@ export const Hero = () => {
                 transition={{ delay: 0.3, duration: 0.6 }}
                 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight"
               >
-                See Your{" "}
-                <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
-                  Financial Future
-                </span>
+                {t('hero.title')}
               </motion.h1>
 
               <motion.p
@@ -73,7 +73,7 @@ export const Hero = () => {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="text-xl text-muted-foreground max-w-xl"
               >
-                Slide through life, watch your choices unfold. An interactive simulator that makes retirement planning feel real, engaging, and personal.
+                {t('hero.subtitle')}
               </motion.p>
             </div>
 
@@ -85,12 +85,12 @@ export const Hero = () => {
             >
               <Link to="/onboarding">
                 <Button size="lg" className="group bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all">
-                  Start Your Simulation
+                  {t('hero.cta')}
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Button size="lg" variant="outline" className="border-2">
-                Watch Demo
+                {t('hero.demo')}
               </Button>
             </motion.div>
 
@@ -109,7 +109,7 @@ export const Hero = () => {
                 ))}
               </div>
               <div className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">10,000+</span> simulations run
+                <span className="font-semibold text-foreground">10,000+</span> {t('hero.simulations')}
               </div>
             </motion.div>
           </motion.div>
@@ -143,7 +143,7 @@ export const Hero = () => {
             >
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-accent rounded-full animate-pulse" />
-                <span className="text-sm font-medium">Live AI Analysis</span>
+                <span className="text-sm font-medium">{t('hero.liveAI')}</span>
               </div>
             </motion.div>
           </motion.div>
