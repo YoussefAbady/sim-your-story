@@ -368,7 +368,7 @@ export default function Results() {
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Settings className="w-5 h-5" />
-              <span className="font-semibold">Advanced Controls</span>
+              <span className="font-semibold">Edit Forecast Options</span>
             </div>
             <SidebarTrigger />
           </div>
