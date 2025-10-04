@@ -18,10 +18,12 @@ interface AIChatPanelProps {
     title: string;
     content: string;
     icon?: string;
+    category?: string;
   };
+  language?: string;
 }
 
-export function AIChatPanel({ isOpen, onClose, initialContext }: AIChatPanelProps) {
+export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en' }: AIChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -31,14 +33,18 @@ export function AIChatPanel({ isOpen, onClose, initialContext }: AIChatPanelProp
   // Initialize with context when panel opens
   useEffect(() => {
     if (isOpen && initialContext && !hasInitialized) {
-      const initialMessage = `I'd like to learn more about: ${initialContext.title}\n\n${initialContext.content}`;
+      const initialMessage = language === 'pl'
+        ? `Powiedz mi więcej o: "${initialContext.title}"\n\nOto co wiem: ${initialContext.content}\n\nWyjaśnij to dokładniej i podaj więcej szczegółów.`
+        : `Tell me more about: "${initialContext.title}"\n\nHere's what I know: ${initialContext.content}\n\nPlease explain this in more detail.`;
+      
       setMessages([{ role: "user", content: initialMessage }]);
       setHasInitialized(true);
       streamChat([{ role: "user", content: initialMessage }]);
     } else if (!isOpen) {
       setHasInitialized(false);
+      setMessages([]);
     }
-  }, [isOpen, initialContext, hasInitialized]);
+  }, [isOpen, initialContext, hasInitialized, language]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -60,7 +66,7 @@ export function AIChatPanel({ isOpen, onClose, initialContext }: AIChatPanelProp
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: chatMessages }),
+        body: JSON.stringify({ messages: chatMessages, language }),
       });
 
       if (!response.ok || !response.body) {

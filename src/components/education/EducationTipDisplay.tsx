@@ -11,7 +11,7 @@ import { AIChatPanel } from "./AIChatPanel";
 
 export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } = {}) => {
   const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const location = useLocation();
@@ -61,10 +61,12 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
       <AIChatPanel
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
+        language={locale}
         initialContext={currentTip ? {
           title: currentTip.title,
           content: currentTip.content,
-          icon: currentTip.icon
+          icon: currentTip.icon,
+          category: currentTip.id
         } : undefined}
       />
       <AnimatePresence>
