@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 
 export function EducationPanel() {
-  const { isPanelOpen, tipHistory, togglePanel, isLoading, loadDetailedContent, isLoadingDetailed } = useEducation();
+  const { isPanelOpen, tipHistory, togglePanel, isLoading, loadDetailedContentForHistoryTip, isLoadingDetailed } = useEducation();
   const [expandedTips, setExpandedTips] = useState<Set<string>>(new Set());
   const [loadingDetailedTips, setLoadingDetailedTips] = useState<Set<string>>(new Set());
 
@@ -27,7 +27,7 @@ export function EducationPanel() {
       // Expand and load detailed content if needed
       if (!tip.detailedContent) {
         setLoadingDetailedTips((prev) => new Set(prev).add(tipKey));
-        await loadDetailedContent(tip.id);
+        await loadDetailedContentForHistoryTip(tip);
         setLoadingDetailedTips((prev) => {
           const next = new Set(prev);
           next.delete(tipKey);

@@ -22,6 +22,7 @@ interface EducationContextType {
   showTip: (tip: EducationTip) => void;
   showAITip: (fieldKey: string, userData?: any) => Promise<void>;
   loadDetailedContent: (fieldKey: string, userData?: any) => Promise<void>;
+  loadDetailedContentForHistoryTip: (tip: EducationTip) => Promise<void>;
   hideTip: () => void;
   togglePanel: () => void;
 }
@@ -129,6 +130,35 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
+  const loadDetailedContentForHistoryTip = async (tip: EducationTip) => {
+    setIsLoadingDetailed(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-education-tip', {
+        body: { fieldKey: tip.id, detailed: true, language: locale }
+      });
+
+      if (error) {
+        console.error('Error loading detailed content:', error);
+        return;
+      }
+
+      if (data?.detailedContent) {
+        // Update the tip in history
+        setTipHistory(prev => prev.map(t => 
+          t.timestamp === tip.timestamp && t.id === tip.id
+            ? { ...t, detailedContent: data.detailedContent }
+            : t
+        ));
+        awardPoints('detailed_tip_read');
+      }
+    } catch (err) {
+      console.error('Failed to load detailed content:', err);
+    } finally {
+      setIsLoadingDetailed(false);
+    }
+  };
+
   const hideTip = () => {
     setCurrentTip(null);
   };
@@ -149,7 +179,8 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
       tipHistory, 
       showTip, 
       showAITip, 
-      loadDetailedContent, 
+      loadDetailedContent,
+      loadDetailedContentForHistoryTip,
       hideTip, 
       togglePanel 
     }}>
