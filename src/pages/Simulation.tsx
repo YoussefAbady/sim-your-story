@@ -6,7 +6,6 @@ import * as z from "zod";
 import zusLogo from "@/assets/zus-logo.png";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -16,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { AlertCircle, Calculator } from "lucide-react";
+import { AlertCircle, Calculator, Lightbulb } from "lucide-react";
 import { SICK_LEAVE_DATA } from "@/services/pensionData";
 import {
   Form,
@@ -27,6 +26,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { EducationalInput } from "@/components/education/EducationalInput";
+import { EducationalCard } from "@/components/education/EducationalCard";
+import { useEducation } from "@/contexts/EducationContext";
+import { EDUCATION_TIPS } from "@/data/educationContent";
 
 const currentYear = new Date().getFullYear();
 
@@ -46,6 +49,7 @@ type SimulationFormData = z.infer<typeof simulationSchema>;
 
 export default function Simulation() {
   const navigate = useNavigate();
+  const { showTip } = useEducation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Calculate default retirement year based on current age and sex
@@ -113,6 +117,21 @@ export default function Simulation() {
       </header>
 
       <main id="main-content" className="container mx-auto px-4 py-8 max-w-3xl">
+        {/* Educational Header */}
+        <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+              <Lightbulb className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h2 className="font-semibold text-foreground mb-1">Learn as You Go!</h2>
+              <p className="text-sm text-muted-foreground">
+                Click on any field to learn how it affects your pension. We'll show you "Did You Know" tips to help you understand the calculation.
+              </p>
+            </div>
+          </div>
+        </Card>
+
         <Card className="p-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -128,11 +147,12 @@ export default function Simulation() {
                       <FormItem>
                         <FormLabel>Current Age</FormLabel>
                         <FormControl>
-                          <Input 
+                          <EducationalInput 
                             type="number" 
                             placeholder="30" 
                             {...field}
                             aria-required="true"
+                            educationKey="birthDate"
                           />
                         </FormControl>
                         <FormMessage />
@@ -144,11 +164,11 @@ export default function Simulation() {
                     control={form.control}
                     name="sex"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem onClick={() => showTip(EDUCATION_TIPS.gender)}>
                         <FormLabel>Sex</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger aria-required="true">
+                            <SelectTrigger aria-required="true" className="cursor-help">
                               <SelectValue placeholder="Select sex" />
                             </SelectTrigger>
                           </FormControl>
@@ -170,11 +190,12 @@ export default function Simulation() {
                     <FormItem>
                       <FormLabel>Current Gross Monthly Salary (PLN)</FormLabel>
                       <FormControl>
-                        <Input 
+                        <EducationalInput 
                           type="number" 
                           placeholder="5000" 
                           {...field}
                           aria-required="true"
+                          educationKey="currentSalary"
                         />
                       </FormControl>
                       <FormDescription>Your current monthly gross salary in PLN</FormDescription>
@@ -191,12 +212,13 @@ export default function Simulation() {
                       <FormItem>
                         <FormLabel>Year Started Working</FormLabel>
                         <FormControl>
-                          <Input 
+                          <EducationalInput 
                             type="number" 
                             placeholder={String(currentYear - 10)} 
                             {...field}
                             aria-required="true"
                             aria-describedby="start-year-note"
+                            educationKey="workStartYear"
                           />
                         </FormControl>
                         <FormDescription id="start-year-note">Calculations use January of this year</FormDescription>
@@ -212,12 +234,13 @@ export default function Simulation() {
                       <FormItem>
                         <FormLabel>Planned Retirement Year</FormLabel>
                         <FormControl>
-                          <Input 
+                          <EducationalInput 
                             type="number" 
                             placeholder={String(getRetirementYear(watchAge, watchSex))} 
                             {...field}
                             aria-required="true"
                             aria-describedby="end-year-note"
+                            educationKey="contributionYears"
                           />
                         </FormControl>
                         <FormDescription id="end-year-note">
@@ -241,7 +264,12 @@ export default function Simulation() {
                     <FormItem>
                       <FormLabel>Postal Code</FormLabel>
                       <FormControl>
-                        <Input type="text" placeholder="00-000" {...field} />
+                        <EducationalInput 
+                          type="text" 
+                          placeholder="00-000" 
+                          {...field} 
+                          educationKey="employmentGaps"
+                        />
                       </FormControl>
                       <FormDescription>Helps us provide more accurate regional analysis</FormDescription>
                       <FormMessage />
@@ -257,7 +285,12 @@ export default function Simulation() {
                       <FormItem>
                         <FormLabel>Funds in ZUS Account (PLN)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="0" {...field} />
+                          <EducationalInput 
+                            type="number" 
+                            placeholder="0" 
+                            {...field} 
+                            educationKey="simulation"
+                          />
                         </FormControl>
                         <FormDescription>Leave blank to estimate</FormDescription>
                         <FormMessage />
@@ -272,7 +305,12 @@ export default function Simulation() {
                       <FormItem>
                         <FormLabel>Funds in Sub-Account (PLN)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="0" {...field} />
+                          <EducationalInput 
+                            type="number" 
+                            placeholder="0" 
+                            {...field} 
+                            educationKey="simulation"
+                          />
                         </FormControl>
                         <FormDescription>Leave blank to estimate</FormDescription>
                         <FormMessage />
@@ -285,7 +323,10 @@ export default function Simulation() {
                   control={form.control}
                   name="includeSickLeave"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border border-border p-4">
+                    <FormItem 
+                      className="flex flex-row items-center justify-between rounded-lg border border-border p-4 cursor-help hover:border-primary/50 transition-colors"
+                      onClick={() => showTip(EDUCATION_TIPS.sickLeave)}
+                    >
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Include Sick Leave Possibility</FormLabel>
                         <FormDescription>

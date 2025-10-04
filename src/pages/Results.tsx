@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import zusLogo from "@/assets/zus-logo.png";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw, Download, Mail, Eye } from "lucide-react";
@@ -37,6 +36,10 @@ import { AccountGrowthChart } from "@/components/dashboard/AccountGrowthChart";
 import { HistoricalSalaryInput } from "@/components/dashboard/HistoricalSalaryInput";
 import { FutureSalaryInput } from "@/components/dashboard/FutureSalaryInput";
 import { IllnessPeriodInput } from "@/components/dashboard/IllnessPeriodInput";
+import { EducationalInput } from "@/components/education/EducationalInput";
+import { EducationalCard } from "@/components/education/EducationalCard";
+import { useEducation } from "@/contexts/EducationContext";
+import { EDUCATION_TIPS } from "@/data/educationContent";
 
 export interface SalaryPeriod {
   id: string;
@@ -53,6 +56,7 @@ export interface IllnessPeriod {
 
 export default function Results() {
   const navigate = useNavigate();
+  const { showTip } = useEducation();
   const [simulationInput, setSimulationInput] = useState<SimulationInput | null>(null);
   const [results, setResults] = useState<SimulationResult | null>(null);
   const [expectedPension, setExpectedPension] = useState<number>(0);
@@ -564,7 +568,7 @@ export default function Results() {
                         <Label htmlFor="custom-indexation" className="text-xs">
                           Custom Growth Rate (%)
                         </Label>
-                        <Input
+                        <EducationalInput
                           id="custom-indexation"
                           type="number"
                           step="0.1"
@@ -572,6 +576,7 @@ export default function Results() {
                           value={customIndexation ?? ""}
                           onChange={(e) => setCustomIndexation(e.target.value ? parseFloat(e.target.value) : null)}
                           className="mt-1"
+                          educationKey="indexation"
                         />
                       </div>
                       {simulationInput && (
