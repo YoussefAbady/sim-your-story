@@ -178,6 +178,13 @@ const translations: Record<Locale, any> = {
       close: 'Close',
       submit: 'Submit',
     },
+    education: {
+      didYouKnow: 'Did You Know?',
+      learnMore: 'Learn more',
+      generating: 'Generating personalized tip...',
+      generatingSubtitle: 'Using AI to create insights just for you',
+      loadingDetailed: 'Loading detailed information...',
+    },
   },
   pl: {
     nav: {
@@ -301,6 +308,13 @@ const translations: Record<Locale, any> = {
       edit: 'Edytuj',
       close: 'Zamknij',
       submit: 'Wyślij',
+    },
+    education: {
+      didYouKnow: 'Czy wiesz, że?',
+      learnMore: 'Dowiedz się więcej',
+      generating: 'Generowanie spersonalizowanej podpowiedzi...',
+      generatingSubtitle: 'Używam AI do tworzenia wskazówek dla Ciebie',
+      loadingDetailed: 'Ładowanie szczegółowych informacji...',
     },
   },
 };

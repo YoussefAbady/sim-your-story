@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { EDUCATION_TIPS } from '@/data/educationContent';
+import { useLocale } from '@/contexts/LocaleContext';
 
 export interface EducationTip {
   id: string;
@@ -26,6 +27,7 @@ const EducationContext = createContext<EducationContextType | undefined>(undefin
 const tipCache = new Map<string, EducationTip>();
 
 export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { locale } = useLocale();
   const [currentTip, setCurrentTip] = useState<EducationTip | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetailed, setIsLoadingDetailed] = useState(false);
@@ -35,8 +37,8 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   const showAITip = async (fieldKey: string, userData?: any) => {
-    // Check cache first
-    const cacheKey = `${fieldKey}-${JSON.stringify(userData || {})}`;
+    // Check cache first with language
+    const cacheKey = `${fieldKey}-${locale}-${JSON.stringify(userData || {})}`;
     if (tipCache.has(cacheKey)) {
       setCurrentTip(tipCache.get(cacheKey)!);
       return;
@@ -46,7 +48,7 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
     
     try {
       const { data, error } = await supabase.functions.invoke('generate-education-tip', {
-        body: { fieldKey, userData }
+        body: { fieldKey, userData, language: locale }
       });
 
       if (error) {
@@ -82,7 +84,7 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
     
     try {
       const { data, error } = await supabase.functions.invoke('generate-education-tip', {
-        body: { fieldKey, userData, detailed: true }
+        body: { fieldKey, userData, detailed: true, language: locale }
       });
 
       if (error) {

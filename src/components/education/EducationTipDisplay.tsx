@@ -4,9 +4,11 @@ import { Lightbulb, X, Loader2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export const EducationTipDisplay = () => {
   const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
+  const { t } = useLocale();
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Reset expanded state when tip changes
@@ -40,13 +42,13 @@ export const EducationTipDisplay = () => {
         >
           <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30 p-5 shadow-lg max-h-[80vh] overflow-y-auto">
             {isLoading ? (
-              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                   <Loader2 className="w-5 h-5 text-primary animate-spin" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-foreground">Generating personalized tip...</h3>
-                  <p className="text-sm text-muted-foreground">Using AI to create insights just for you</p>
+                  <h3 className="font-semibold text-foreground">{t('education.generating')}</h3>
+                  <p className="text-sm text-muted-foreground">{t('education.generatingSubtitle')}</p>
                 </div>
               </div>
             ) : currentTip ? (
@@ -58,7 +60,7 @@ export const EducationTipDisplay = () => {
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <h3 className="font-semibold text-foreground flex items-center gap-2">
                       {currentTip.icon && <span className="text-xl">{currentTip.icon}</span>}
-                      Did You Know?
+                      {t('education.didYouKnow')}
                     </h3>
                     <div className="flex gap-1">
                       {!isExpanded && (
@@ -67,7 +69,7 @@ export const EducationTipDisplay = () => {
                           size="icon"
                           className="h-6 w-6"
                           onClick={handleLearnMore}
-                          title="Learn more"
+                          title={t('education.learnMore')}
                         >
                           <BookOpen className="w-4 h-4" />
                         </Button>
@@ -100,7 +102,7 @@ export const EducationTipDisplay = () => {
                       {isLoadingDetailed ? (
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          <span className="text-sm">Loading detailed information...</span>
+                          <span className="text-sm">{t('education.loadingDetailed')}</span>
                         </div>
                       ) : currentTip.detailedContent ? (
                         <div 
