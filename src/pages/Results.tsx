@@ -608,7 +608,23 @@ export default function Results() {
             </div>
             <SidebarGroup>
               <SidebarGroupContent>
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <Tabs value={activeTab} onValueChange={(value) => {
+                  setActiveTab(value);
+                  // Show educational toast when switching tabs
+                  const tabTips: Record<string, string> = {
+                    growth: "💡 Did you know? Your ZUS account balances are indexed annually based on wage growth and GDP, helping preserve value over time.",
+                    historical: "💡 Did you know? Your pension is calculated based on ALL contributions made throughout your career. Historical salary adjustments can significantly impact your forecast!",
+                    future: "💡 Did you know? The pension system uses wage growth projections to estimate your future contributions. Working just one additional year can increase your pension by 8-12%!",
+                    illness: "💡 Did you know? Extended sick leave periods can reduce your pension! The record-holder for Poland's highest pension never took sick leave in 45 years of work."
+                  };
+                  if (tabTips[value]) {
+                    toast({
+                      title: "Educational Tip",
+                      description: tabTips[value],
+                      duration: 5000,
+                    });
+                  }
+                }} className="w-full">
                   <TabsList className="grid w-full grid-cols-2 mb-4">
                     <TabsTrigger value="growth" className="text-xs">{t('results.sidebar.tabs.growth')}</TabsTrigger>
                     <TabsTrigger value="historical" className="text-xs">{t('results.sidebar.tabs.history')}</TabsTrigger>
@@ -662,6 +678,13 @@ export default function Results() {
                           placeholder={t('results.sidebar.placeholderExample')}
                           value={customIndexation ?? ""}
                           onChange={(e) => setCustomIndexation(e.target.value ? parseFloat(e.target.value) : null)}
+                          onFocus={() => {
+                            toast({
+                              title: "💡 Pension Indexation",
+                              description: "Pensions are adjusted annually based on inflation and wage growth. This indexation helps maintain the purchasing power of your pension over time.",
+                              duration: 4000,
+                            });
+                          }}
                           className="mt-1"
                           educationKey="indexation"
                         />
