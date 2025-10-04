@@ -49,7 +49,7 @@ type SimulationFormData = z.infer<typeof simulationSchema>;
 
 export default function Simulation() {
   const navigate = useNavigate();
-  const { showTip } = useEducation();
+  const { showAITip } = useEducation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Calculate default retirement year based on current age and sex
@@ -165,7 +165,7 @@ export default function Simulation() {
                     control={form.control}
                     name="sex"
                     render={({ field }) => (
-                      <FormItem onClick={() => showTip(EDUCATION_TIPS.gender)}>
+                      <FormItem onClick={() => showAITip('gender', form.getValues())}>
                         <FormLabel>Sex</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
@@ -332,7 +332,7 @@ export default function Simulation() {
                   render={({ field }) => (
                     <FormItem 
                       className="flex flex-row items-center justify-between rounded-lg border border-border p-4 cursor-help hover:border-primary/50 transition-colors"
-                      onClick={() => showTip(EDUCATION_TIPS.sickLeave)}
+                      onClick={() => showAITip('sickLeave', form.getValues())}
                     >
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Include Sick Leave Possibility</FormLabel>
