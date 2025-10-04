@@ -2,19 +2,23 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Info } from "lucide-react";
+import { ArrowRight, Info, BookOpen } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { EducationalInput } from "@/components/education/EducationalInput";
+import { EducationalCard } from "@/components/education/EducationalCard";
+import { useEducation } from "@/contexts/EducationContext";
+import { EDUCATION_TIPS } from "@/data/educationContent";
 import zusLogo from "@/assets/zus-logo.png";
 
 export default function Index() {
   const navigate = useNavigate();
+  const { showTip } = useEducation();
   const [expectedPension, setExpectedPension] = useState<string>("3000");
 
   const handleExpectedPensionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,31 +88,61 @@ export default function Index() {
               className="h-16 md:h-20 w-auto cursor-pointer hover:opacity-80 transition-opacity"
             />
           </Link>
-          <h1 className="text-3xl font-bold text-foreground">Retirement Simulator</h1>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-foreground">Retirement Education Center</h1>
+            <p className="text-sm text-muted-foreground mt-1">Learn about your pension while planning your future</p>
+          </div>
+          <Button 
+            variant="outline" 
+            className="gap-2"
+            onClick={() => showTip(EDUCATION_TIPS.simulation)}
+          >
+            <BookOpen className="w-4 h-4" />
+            Learning Guide
+          </Button>
         </div>
       </header>
 
       <main id="main-content" className="container mx-auto px-4 py-8 space-y-8">
+        {/* Educational Welcome */}
+        <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+              <BookOpen className="w-6 h-6 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-xl font-bold text-foreground mb-2">Welcome to Your Pension Learning Journey</h2>
+              <p className="text-sm text-foreground mb-3">
+                Understanding your pension doesn't have to be complicated! Click on any field or card to learn more about how it affects your retirement.
+              </p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Info className="w-4 h-4" />
+                <span>Look for the "Did You Know?" tips as you explore</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+
         {/* Disclaimer */}
-        <Card className="bg-accent/10 border-accent p-4">
+        <Card className="bg-accent/10 border-accent/20 p-4">
           <div className="flex items-start gap-3">
             <Info className="w-5 h-5 text-accent shrink-0 mt-0.5" aria-hidden="true" />
             <div>
-              <h2 className="font-semibold text-foreground">Educational Simulator</h2>
+              <h2 className="font-semibold text-foreground">Educational Tool</h2>
               <p className="text-sm text-foreground mt-1">
-                This is an educational tool. Not financial advice. Not a prediction.
-                Data sources: ZUS Forecast up to 2080, GUS, NBP, Ministry of Finance.
+                This simulator helps you learn about Polish pension system. Based on official ZUS forecasts, GUS, NBP, and Ministry of Finance data.
               </p>
             </div>
           </div>
         </Card>
 
         {/* Expected Pension Input */}
-        <Card className="p-6">
+        <EducationalCard educationKey="expectedPension" className="p-6">
           <div className="space-y-4">
             <div>
-              <Label htmlFor="expected-pension" className="text-lg font-semibold">
+              <Label htmlFor="expected-pension" className="text-lg font-semibold flex items-center gap-2">
                 What pension would you like in the future?
+                <span className="text-xs font-normal text-muted-foreground">(Click to learn more)</span>
               </Label>
               <p className="text-sm text-muted-foreground mt-1">
                 Enter your desired monthly pension amount (PLN)
@@ -121,13 +155,14 @@ export default function Index() {
                   Expected pension amount in PLN
                 </Label>
                 <div className="relative">
-                  <Input
+                  <EducationalInput
                     id="expected-pension"
                     type="number"
                     value={expectedPension}
                     onChange={handleExpectedPensionChange}
                     className="pr-12 text-lg"
                     aria-describedby="pension-comparison"
+                    educationKey="expectedPension"
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden="true">
                     PLN
@@ -135,7 +170,11 @@ export default function Index() {
                 </div>
               </div>
               
-              <div id="pension-comparison" className="text-sm text-muted-foreground">
+              <div 
+                id="pension-comparison" 
+                className="text-sm text-muted-foreground cursor-help"
+                onClick={() => showTip(EDUCATION_TIPS.averagePension)}
+              >
                 Current average: <span className="font-semibold text-foreground">{currentAverage} PLN</span>
                 <span className="sr-only">
                   {parseInt(expectedPension) > currentAverage 
@@ -145,11 +184,17 @@ export default function Index() {
               </div>
             </div>
           </div>
-        </Card>
+        </EducationalCard>
 
         {/* Pension Groups Chart */}
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Average Pension by Group</h2>
+        <EducationalCard educationKey="pensionGroups" className="p-6">
+          <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
+            Average Pension by Group
+            <span className="text-xs font-normal text-muted-foreground">(Click cards to learn)</span>
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Explore different pension levels and what they mean for you
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" role="list">
             {pensionGroups.map((group) => (
               <TooltipProvider key={group.key}>
@@ -183,7 +228,7 @@ export default function Index() {
               </TooltipProvider>
             ))}
           </div>
-        </Card>
+        </EducationalCard>
 
         {/* Did You Know */}
         <Card className="bg-success/5 border-success/20 p-4">
