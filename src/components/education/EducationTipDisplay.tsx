@@ -75,7 +75,7 @@ export const EducationTipDisplay = () => {
               </div>
             ) : currentTip ? (
               <>
-                <div className="sticky top-0 z-20 bg-gradient-to-br from-primary/10 to-accent/10 backdrop-blur p-5 border-b border-primary/20">
+                <div className="sticky top-0 z-20 p-5 border-b border-primary/20">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                       <Lightbulb className="w-5 h-5 text-primary" />
