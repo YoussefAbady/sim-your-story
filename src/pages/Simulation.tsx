@@ -35,6 +35,7 @@ const simulationSchema = z.object({
   grossSalary: z.coerce.number().min(1000, "Salary must be at least 1000 PLN").max(1000000, "Salary seems too high"),
   startYear: z.coerce.number().min(1960).max(currentYear),
   endYear: z.coerce.number().min(currentYear).max(2080),
+  postalCode: z.string().max(10, "Postal code must be less than 10 characters").optional(),
   accountFunds: z.coerce.number().min(0).optional(),
   subAccountFunds: z.coerce.number().min(0).optional(),
   includeSickLeave: z.boolean().default(false),
@@ -226,6 +227,21 @@ export default function Simulation() {
               <div className="space-y-4 pt-6 border-t border-border">
                 <h2 className="text-xl font-semibold text-foreground">Optional Information</h2>
                 
+                <FormField
+                  control={form.control}
+                  name="postalCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Postal Code</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="00-000" {...field} />
+                      </FormControl>
+                      <FormDescription>Helps us provide more accurate regional analysis</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
