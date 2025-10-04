@@ -117,20 +117,25 @@ export default function Index() {
 
       {/* Header */}
       <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-6 flex items-center gap-6">
-          <Link to="/">
-            <img 
-              src={zusLogo} 
-              alt="ZUS - Zakład Ubezpieczeń Społecznych" 
-              className="h-16 md:h-20 w-auto cursor-pointer hover:opacity-80 transition-opacity"
-            />
-          </Link>
-          <div className="flex-1 flex items-center justify-between gap-4">
+        <div className="container mx-auto px-4 py-6 flex items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            <Link to="/">
+              <img 
+                src={zusLogo} 
+                alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+                className="h-16 md:h-20 w-auto cursor-pointer hover:opacity-80 transition-opacity"
+              />
+            </Link>
             <div>
               <h1 className="text-3xl font-bold text-foreground">{t('index.header.title')}</h1>
               <p className="text-sm text-muted-foreground mt-1">{t('index.header.subtitle')}</p>
             </div>
+          </div>
+          <div className="flex items-center gap-4">
             <LanguageSwitcher />
+            <Button onClick={() => navigate('/admin/reports')} variant="outline">
+              Admin Panel
+            </Button>
           </div>
         </div>
       </header>

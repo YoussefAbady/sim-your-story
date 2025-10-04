@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      quizzes: {
+        Row: {
+          answers: Json | null
+          completed_at: string
+          created_at: string
+          id: string
+          quiz_data: Json | null
+          quiz_type: string
+          score: number | null
+          total_questions: number | null
+          user_email: string
+          user_name: string
+        }
+        Insert: {
+          answers?: Json | null
+          completed_at?: string
+          created_at?: string
+          id?: string
+          quiz_data?: Json | null
+          quiz_type: string
+          score?: number | null
+          total_questions?: number | null
+          user_email: string
+          user_name: string
+        }
+        Update: {
+          answers?: Json | null
+          completed_at?: string
+          created_at?: string
+          id?: string
+          quiz_data?: Json | null
+          quiz_type?: string
+          score?: number | null
+          total_questions?: number | null
+          user_email?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
+      session_time: {
+        Row: {
+          created_at: string
+          duration_seconds: number | null
+          end_time: string | null
+          id: string
+          page_path: string | null
+          session_id: string
+          start_time: string
+          user_identifier: string | null
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number | null
+          end_time?: string | null
+          id?: string
+          page_path?: string | null
+          session_id: string
+          start_time?: string
+          user_identifier?: string | null
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number | null
+          end_time?: string | null
+          id?: string
+          page_path?: string | null
+          session_id?: string
+          start_time?: string
+          user_identifier?: string | null
+        }
+        Relationships: []
+      }
       simulation_logs: {
         Row: {
           account_funds: number | null

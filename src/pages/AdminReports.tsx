@@ -41,43 +41,64 @@ interface SimulationLog {
   created_at: string;
 }
 
+interface SessionTime {
+  id: string;
+  session_id: string;
+  user_identifier: string | null;
+  start_time: string;
+  end_time: string | null;
+  duration_seconds: number | null;
+  page_path: string | null;
+  created_at: string;
+}
+
+interface Quiz {
+  id: string;
+  user_name: string;
+  user_email: string;
+  quiz_type: string;
+  quiz_data: any;
+  score: number | null;
+  total_questions: number | null;
+  answers: any;
+  completed_at: string;
+  created_at: string;
+}
+
 export default function AdminReports() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [logs, setLogs] = useState<SimulationLog[]>([]);
   const [filteredLogs, setFilteredLogs] = useState<SimulationLog[]>([]);
+  const [sessions, setSessions] = useState<SessionTime[]>([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState<'simulations' | 'sessions' | 'quizzes'>('simulations');
   const [filterSex, setFilterSex] = useState<string>("all");
   const [filterIllness, setFilterIllness] = useState<string>("all");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
   useEffect(() => {
-    checkAuth();
+    fetchAllData();
   }, []);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchLogs();
-    }
-  }, [isAuthenticated]);
 
   useEffect(() => {
     applyFilters();
   }, [logs, filterSex, filterIllness, startDate, endDate]);
 
-  const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      navigate("/auth");
-      return;
+  const fetchAllData = async () => {
+    setIsLoading(true);
+    try {
+      await Promise.all([fetchLogs(), fetchSessions(), fetchQuizzes()]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsAuthenticated(true);
   };
 
   const fetchLogs = async () => {
-    setIsLoading(true);
     try {
       const { data, error } = await supabase
         .from('simulation_logs')
@@ -85,17 +106,52 @@ export default function AdminReports() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-
       setLogs(data || []);
     } catch (error) {
       console.error('Error fetching logs:', error);
       toast({
         title: "Error loading reports",
-        description: "Failed to fetch simulation logs. Please try again.",
+        description: "Failed to fetch simulation logs.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
+    }
+  };
+
+  const fetchSessions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('session_time')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setSessions(data || []);
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+      toast({
+        title: "Error loading sessions",
+        description: "Failed to fetch session data.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchQuizzes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('quizzes')
+        .select('*')
+        .order('completed_at', { ascending: false });
+
+      if (error) throw error;
+      setQuizzes(data || []);
+    } catch (error) {
+      console.error('Error fetching quizzes:', error);
+      toast({
+        title: "Error loading quizzes",
+        description: "Failed to fetch quiz data.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -174,14 +230,6 @@ export default function AdminReports() {
     setEndDate("");
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Checking authentication...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card sticky top-0 z-10">
@@ -210,8 +258,32 @@ export default function AdminReports() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Filters */}
-        <Card className="p-6 mb-6">
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6">
+          <Button
+            variant={activeTab === 'simulations' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('simulations')}
+          >
+            Simulations
+          </Button>
+          <Button
+            variant={activeTab === 'sessions' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('sessions')}
+          >
+            Session Time
+          </Button>
+          <Button
+            variant={activeTab === 'quizzes' ? 'default' : 'outline'}
+            onClick={() => setActiveTab('quizzes')}
+          >
+            Quizzes
+          </Button>
+        </div>
+
+        {activeTab === 'simulations' && (
+          <>
+            {/* Filters */}
+            <Card className="p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Filter className="w-5 h-5 text-primary" />
             <h2 className="text-xl font-semibold text-foreground">Filters</h2>
@@ -355,6 +427,92 @@ export default function AdminReports() {
             </div>
           )}
         </Card>
+          </>
+        )}
+
+        {activeTab === 'sessions' && (
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Session Time Records</h2>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground py-8">Loading...</p>
+            ) : sessions.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No session records found</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Session ID</TableHead>
+                      <TableHead>User</TableHead>
+                      <TableHead>Start Time</TableHead>
+                      <TableHead>End Time</TableHead>
+                      <TableHead>Duration (min)</TableHead>
+                      <TableHead>Page</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sessions.map((session) => (
+                      <TableRow key={session.id}>
+                        <TableCell className="font-mono text-xs">{session.session_id.substring(0, 8)}...</TableCell>
+                        <TableCell>{session.user_identifier || 'Anonymous'}</TableCell>
+                        <TableCell>{new Date(session.start_time).toLocaleString()}</TableCell>
+                        <TableCell>{session.end_time ? new Date(session.end_time).toLocaleString() : 'Active'}</TableCell>
+                        <TableCell>
+                          {session.duration_seconds 
+                            ? Math.round(session.duration_seconds / 60) 
+                            : '-'}
+                        </TableCell>
+                        <TableCell>{session.page_path || '-'}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </Card>
+        )}
+
+        {activeTab === 'quizzes' && (
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Quiz Results</h2>
+            {isLoading ? (
+              <p className="text-center text-muted-foreground py-8">Loading...</p>
+            ) : quizzes.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No quiz records found</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Quiz Type</TableHead>
+                      <TableHead>Score</TableHead>
+                      <TableHead>Questions</TableHead>
+                      <TableHead>Completed At</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {quizzes.map((quiz) => (
+                      <TableRow key={quiz.id}>
+                        <TableCell>{quiz.user_name}</TableCell>
+                        <TableCell>{quiz.user_email}</TableCell>
+                        <TableCell className="capitalize">{quiz.quiz_type}</TableCell>
+                        <TableCell>
+                          {quiz.score !== null && quiz.total_questions 
+                            ? `${quiz.score}/${quiz.total_questions}` 
+                            : '-'}
+                        </TableCell>
+                        <TableCell>{quiz.total_questions || '-'}</TableCell>
+                        <TableCell>{new Date(quiz.completed_at).toLocaleString()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </Card>
+        )}
       </main>
     </div>
   );
