@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw, Download, Mail, Eye } from "lucide-react";
+import { Header } from "@/components/Header";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -193,8 +194,9 @@ export default function Results() {
     <SidebarProvider defaultOpen={false}>
       <div className="min-h-screen flex w-full bg-background">
         <div className="flex-1 flex flex-col min-h-screen">
-          <header className="border-b border-border bg-card sticky top-0 z-10">
-            <div className="container mx-auto px-4 py-6">
+          <Header />
+          <div className="border-b border-border bg-card">
+            <div className="container mx-auto px-4 py-4">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <Button
@@ -217,7 +219,7 @@ export default function Results() {
                 </SidebarTrigger>
               </div>
             </div>
-          </header>
+          </div>
 
           <main id="main-content" className="container mx-auto px-4 py-8 max-w-6xl flex-1">
         {/* Disclaimer */}

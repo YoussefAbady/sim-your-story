@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, Info } from "lucide-react";
+import { Header } from "@/components/Header";
 import {
   Tooltip,
   TooltipContent,
@@ -73,13 +74,7 @@ export default function Index() {
         Skip to main content
       </a>
 
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-foreground">ZUS Pension Simulator</h1>
-          <p className="text-muted-foreground mt-2">Educational tool for forecasting pension amounts</p>
-        </div>
-      </header>
+      <Header />
 
       <main id="main-content" className="container mx-auto px-4 py-8 space-y-8">
         {/* Disclaimer */}
