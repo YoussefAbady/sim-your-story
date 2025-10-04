@@ -21,15 +21,12 @@ import {
   SidebarGroupLabel,
   SidebarProvider,
   SidebarTrigger,
-  SidebarRail,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AccountGrowthChart } from "@/components/dashboard/AccountGrowthChart";
 import { HistoricalSalaryInput } from "@/components/dashboard/HistoricalSalaryInput";
 import { FutureSalaryInput } from "@/components/dashboard/FutureSalaryInput";
 import { IllnessPeriodInput } from "@/components/dashboard/IllnessPeriodInput";
-import { SidebarToggleButton } from "@/components/SidebarToggleButton";
 
 export interface SalaryPeriod {
   id: string;
@@ -125,7 +122,10 @@ export default function Results() {
                     <p className="text-muted-foreground mt-2">Based on ZUS actuarial data (2023-2080)</p>
                   </div>
                 </div>
-                <SidebarToggleButton />
+                <SidebarTrigger className="gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md">
+                  <Settings className="w-4 h-4" />
+                  <span className="font-medium">Advanced Controls</span>
+                </SidebarTrigger>
               </div>
             </div>
           </header>
@@ -364,8 +364,7 @@ export default function Results() {
           </main>
         </div>
 
-        <Sidebar side="right" className="border-l w-80" collapsible="offcanvas" style={{ minWidth: '320px', maxWidth: '600px' }}>
-          <SidebarRail />
+        <Sidebar side="right" className="border-l" collapsible="offcanvas">
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Settings className="w-5 h-5" />
