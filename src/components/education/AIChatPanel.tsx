@@ -21,9 +21,11 @@ interface AIChatPanelProps {
     category?: string;
   };
   language?: string;
+  fieldKey?: string | null;
+  userData?: any;
 }
 
-export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en' }: AIChatPanelProps) {
+export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en', fieldKey, userData }: AIChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -34,8 +36,8 @@ export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en' }
   useEffect(() => {
     if (isOpen && initialContext && !hasInitialized) {
       const initialMessage = language === 'pl'
-        ? `Powiedz mi więcej o: "${initialContext.title}"\n\nOto co wiem: ${initialContext.content}\n\nWyjaśnij to dokładniej i podaj więcej szczegółów.`
-        : `Tell me more about: "${initialContext.title}"\n\nHere's what I know: ${initialContext.content}\n\nPlease explain this in more detail.`;
+        ? 'Wyjaśnij więcej na temat treści wygenerowanej w wyskakującym oknie.'
+        : 'Explain more about the generated content of the popup.';
       
       setMessages([{ role: "user", content: initialMessage }]);
       setHasInitialized(true);
@@ -66,7 +68,14 @@ export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en' }
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ messages: chatMessages, language }),
+        body: JSON.stringify({ 
+          messages: chatMessages, 
+          language, 
+          fieldKey, 
+          userData, 
+          tipTitle: initialContext?.title,
+          tipContent: initialContext?.content
+        }),
       });
 
       if (!response.ok || !response.body) {

@@ -19,6 +19,8 @@ interface EducationContextType {
   isLoading: boolean;
   isLoadingDetailed: boolean;
   tipHistory: EducationTip[];
+  lastFieldKey: string | null;
+  lastUserData: any | null;
   showTip: (tip: EducationTip) => void;
   showAITip: (fieldKey: string, userData?: any) => Promise<void>;
   loadDetailedContent: (fieldKey: string, userData?: any) => Promise<void>;
@@ -36,6 +38,8 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetailed, setIsLoadingDetailed] = useState(false);
   const [tipHistory, setTipHistory] = useState<EducationTip[]>([]);
+  const [lastFieldKey, setLastFieldKey] = useState<string | null>(null);
+  const [lastUserData, setLastUserData] = useState<any | null>(null);
 
   const showTip = (tip: EducationTip) => {
     setCurrentTip(tip);
@@ -47,6 +51,9 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   const showAITip = async (fieldKey: string, userData?: any) => {
+    // Persist last context for chat reuse
+    setLastFieldKey(fieldKey);
+    setLastUserData(userData || null);
     // Check cache first with language
     const cacheKey = `${fieldKey}-${locale}-${JSON.stringify(userData || {})}`;
     if (tipCache.has(cacheKey)) {
@@ -129,6 +136,8 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
       isLoading, 
       isLoadingDetailed, 
       tipHistory, 
+      lastFieldKey,
+      lastUserData,
       showTip, 
       showAITip, 
       loadDetailedContent,

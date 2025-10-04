@@ -10,7 +10,7 @@ import { useLocation } from "react-router-dom";
 import { AIChatPanel } from "./AIChatPanel";
 
 export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } = {}) => {
-  const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
+  const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip, lastFieldKey, lastUserData } = useEducation();
   const { t, locale } = useLocale();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -62,6 +62,8 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
         language={locale}
+        fieldKey={lastFieldKey || currentTip?.id}
+        userData={lastUserData || undefined}
         initialContext={currentTip ? {
           title: currentTip.title,
           content: currentTip.content,

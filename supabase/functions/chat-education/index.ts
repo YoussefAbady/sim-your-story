@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, language = 'en' } = await req.json();
+    const { messages, language = 'en', fieldKey, userData, tipTitle, tipContent } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -61,6 +61,69 @@ FORMATTING:
 
 ${languageInstruction}`;
 
+    // Sanitize user data similar to generator
+    const sanitizeUserData = (data: any) => {
+      if (!data || typeof data !== 'object') return {};
+      return {
+        age: typeof data?.age === 'number' ? Math.floor(Math.max(0, Math.min(120, data.age))) : null,
+        gender: ['male', 'female'].includes(data?.gender) ? data.gender : null,
+        sex: ['male', 'female'].includes(data?.sex) ? data.sex : null,
+        currentSalary: typeof data?.currentSalary === 'number' ? Math.floor(Math.max(0, data.currentSalary)) : null,
+        accountValue: typeof data?.accountValue === 'number' ? Math.floor(Math.max(0, data.accountValue)) : null,
+        workStartYear: typeof data?.workStartYear === 'number' ? Math.floor(Math.max(1950, Math.min(2050, data.workStartYear))) : null,
+        expectedPension: typeof data?.expectedPension === 'number' || typeof data?.expectedPension === 'string' 
+          ? Math.floor(Math.max(0, parseFloat(data.expectedPension))) : null,
+        pensionGroupKey: typeof data?.pensionGroupKey === 'string' ? data.pensionGroupKey : null,
+        pensionGroupLabel: typeof data?.pensionGroupLabel === 'string' ? data.pensionGroupLabel : null,
+        pensionAmount: typeof data?.pensionAmount === 'number' ? Math.floor(Math.max(0, data.pensionAmount)) : null,
+        pensionDescription: typeof data?.pensionDescription === 'string' ? data.pensionDescription : null,
+      };
+    };
+
+    const sanitizedUserData = sanitizeUserData(userData);
+
+    // Build context text like generator
+    function buildUserContext(fieldKey?: string, userData?: any): string {
+      if (!fieldKey) {
+        // Fallback to tip title/content
+        const title = tipTitle ? `Title: ${tipTitle}` : '';
+        const content = tipContent ? `\nContent: ${tipContent}` : '';
+        return `Provide more details based on the previous tip. ${title}${content}`;
+      }
+
+      const age = userData?.age || null;
+      const gender = userData?.gender || userData?.sex || null;
+      const currentSalary = userData?.currentSalary || null;
+      const workStartYear = userData?.workStartYear || null;
+      const expectedPension = userData?.expectedPension || null;
+      const pensionGroupKey = userData?.pensionGroupKey || null;
+      const pensionGroupLabel = userData?.pensionGroupLabel || null;
+      const pensionAmount = userData?.pensionAmount || null;
+      const pensionDescription = userData?.pensionDescription || null;
+
+      if (fieldKey.startsWith('pension_group_')) {
+        let context = `Generate detailed follow-up explanation about the "${pensionGroupLabel}" group (${pensionAmount} PLN/month) in the Polish pension system.\n\n`;
+        context += `PENSION GROUP DETAILS:\n`;
+        context += `- Group: ${pensionGroupLabel}\n`;
+        context += `- Average amount: ${pensionAmount} PLN/month\n`;
+        context += `- Description: ${pensionDescription}\n`;
+        if (expectedPension) context += `- User's expected pension: ${expectedPension} PLN/month\n`;
+        return context;
+      }
+
+      let context = `Provide a follow-up explanation about "${fieldKey}" for the Polish pension system.\n\n`;
+      context += `USER PROFILE:\n`;
+      if (age) context += `- Age: ${age} years old\n`;
+      if (gender) context += `- Gender: ${gender}\n`;
+      if (currentSalary) context += `- Current salary: ${currentSalary} PLN/month\n`;
+      if (workStartYear) context += `- Started working in: ${workStartYear}\n`;
+      if (expectedPension) context += `- Expected pension goal: ${expectedPension} PLN/month\n`;
+      return context;
+    }
+
+    const userContext = buildUserContext(fieldKey, sanitizedUserData);
+
+
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -75,6 +138,7 @@ ${languageInstruction}`;
             role: "system",
             content: `${systemPrompt}\n\nREMEMBER: ${languageInstruction}`
           },
+          { role: "user", content: userContext },
           ...messages,
         ],
         stream: true,
