@@ -578,7 +578,7 @@ export default function Results() {
           </main>
         </div>
 
-        <Sidebar side="right" className="border-l w-[30vw] min-w-[400px]" collapsible="offcanvas">
+        <Sidebar side="right" className="border-l data-[state=open]:w-[30vw] data-[state=open]:min-w-[400px]" collapsible="offcanvas">
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Settings className="w-5 h-5" />
