@@ -41,6 +41,12 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
     hideTip();
   };
 
+  // Hide global instance on results page (Results.tsx has its own positioned instance)
+  if (isResultsPage && sidebarOpen === undefined) {
+    // This is the global instance from App.tsx, hide it on results page
+    return null;
+  }
+
   return (
     <AnimatePresence>
       {(currentTip || isLoading) && (
