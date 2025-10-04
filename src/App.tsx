@@ -24,7 +24,7 @@ const App = () => (
       <EducationProvider>
         <TooltipProvider>
           <Toaster />
-          <Sonner />
+          <Sonner position="top-right" />
           <EducationTipDisplay />
           <BadgeCollection />
           <SessionSummary />
