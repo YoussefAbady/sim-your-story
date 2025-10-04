@@ -185,6 +185,11 @@ const translations: Record<Locale, any> = {
       generatingSubtitle: 'Using AI to create insights just for you',
       loadingDetailed: 'Loading detailed information...',
     },
+    gamification: {
+      pointsEarned: '+{points} points earned!',
+      keepLearning: 'Great job! Keep learning about your pension.',
+      milestoneReached: '🎉 Milestone reached: {milestone}',
+    },
   },
   pl: {
     nav: {
@@ -315,6 +320,11 @@ const translations: Record<Locale, any> = {
       generating: 'Generowanie spersonalizowanej podpowiedzi...',
       generatingSubtitle: 'Używam AI do tworzenia wskazówek dla Ciebie',
       loadingDetailed: 'Ładowanie szczegółowych informacji...',
+    },
+    gamification: {
+      pointsEarned: '+{points} punktów zdobytych!',
+      keepLearning: 'Świetna robota! Ucz się dalej o swojej emeryturze.',
+      milestoneReached: '🎉 Kamień milowy osiągnięty: {milestone}',
     },
   },
 };
