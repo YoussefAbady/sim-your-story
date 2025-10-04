@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -200,7 +200,7 @@ export default function Results() {
   const randomFact = PENSION_FACTS[Math.floor(Math.random() * PENSION_FACTS.length)];
 
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={false} style={{ ["--sidebar-width" as any]: "60vw" } as CSSProperties}>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-secondary/20 to-background relative overflow-hidden">
         <AnimatedBackground variant="orbs" className="opacity-40" />
         <div className="flex-1 flex flex-col min-h-screen">
@@ -578,7 +578,7 @@ export default function Results() {
           </main>
         </div>
 
-        <Sidebar side="right" className="border-l data-[state=closed]:w-0 data-[state=open]:w-[45vw] data-[state=open]:min-w-[600px] transition-all duration-300" collapsible="offcanvas">
+        <Sidebar side="right" className="border-l transition-all duration-300" collapsible="offcanvas">
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Settings className="w-5 h-5" />
