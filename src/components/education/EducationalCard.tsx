@@ -19,7 +19,7 @@ export const EducationalCard = ({ educationKey, children, userData, ...props }: 
     <Card 
       {...props} 
       onClick={handleClick}
-      className={`cursor-help transition-all hover:border-primary/50 ${props.className || ''}`}
+      className={`cursor-pointer transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 ${props.className || ''}`}
     >
       {children}
     </Card>
