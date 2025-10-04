@@ -104,6 +104,18 @@ export default function Results() {
     }, 300);
   };
 
+  const handleResetChanges = () => {
+    setCustomIndexation(null);
+    setHistoricalSalaries([]);
+    setFutureSalaries([]);
+    setIllnessPeriods([]);
+    
+    // Re-run simulation with original input
+    if (simulationInput) {
+      runSimulation(simulationInput);
+    }
+  };
+
   if (!results || !simulationInput) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -391,7 +403,7 @@ export default function Results() {
             <SidebarTrigger />
           </div>
           <SidebarContent>
-            <div className="p-4 border-b">
+            <div className="p-4 border-b space-y-2">
               <Button 
                 onClick={handleUpdateForecast}
                 disabled={isUpdating}
@@ -400,6 +412,14 @@ export default function Results() {
               >
                 <RefreshCw className={`w-4 h-4 ${isUpdating ? 'animate-spin' : ''}`} />
                 {isUpdating ? 'Updating...' : 'Update Forecast'}
+              </Button>
+              <Button 
+                onClick={handleResetChanges}
+                variant="outline"
+                className="w-full"
+                size="lg"
+              >
+                Reset All Changes
               </Button>
             </div>
             <SidebarGroup>
