@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Loader2, MessageCircle } from "lucide-react";
+import { X, Send, Loader2, GraduationCap } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import DOMPurify from "dompurify";
 
 interface Message {
   role: "user" | "assistant";
@@ -173,10 +174,26 @@ export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en', 
           className="fixed left-0 top-0 bottom-0 w-96 bg-background border-r shadow-xl z-30 flex flex-col"
         >
           {/* Header */}
-          <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-primary/10 to-accent/10">
-            <div className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5 text-primary" />
-              <h2 className="text-lg font-semibold">AI Assistant</h2>
+          <div className="p-4 border-b flex items-center justify-between bg-gradient-to-r from-[#FF6B6B]/10 via-[#FD8D8D]/10 to-[#FF6B6B]/10">
+            <div className="flex items-center gap-3">
+              <motion.div
+                animate={{ 
+                  rotate: [0, -10, 10, -10, 0],
+                  scale: [1, 1.1, 1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatDelay: 1,
+                  ease: "easeInOut"
+                }}
+                className="text-2xl"
+              >
+                🎓
+              </motion.div>
+              <h2 className="text-lg font-semibold bg-gradient-to-r from-[#FF6B6B] to-[#FD8D8D] bg-clip-text text-transparent">
+                Private Tutor
+              </h2>
             </div>
             <Button
               variant="ghost"
@@ -201,18 +218,31 @@ export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en', 
                   <div
                     className={`max-w-[80%] rounded-lg p-3 ${
                       message.role === "user"
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-gradient-to-r from-[#FF6B6B] to-[#FD8D8D] text-white"
                         : "bg-muted"
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    {message.role === "assistant" ? (
+                      <div
+                        className="text-sm prose prose-sm max-w-none dark:prose-invert"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(message.content, {
+                            ALLOWED_TAGS: ['p', 'strong', 'em', 'br', 'ul', 'ol', 'li', 'h3', 'h4', 'span', 'div'],
+                            ALLOWED_ATTR: ['style', 'class']
+                          })
+                        }}
+                      />
+                    ) : (
+                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    )}
                   </div>
                 </div>
               ))}
               {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex justify-start">
-                  <div className="bg-muted rounded-lg p-3">
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                  <div className="bg-muted rounded-lg p-3 flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin text-[#FF6B6B]" />
+                    <span className="text-sm text-muted-foreground">Tutoring...</span>
                   </div>
                 </div>
               )}
@@ -234,6 +264,7 @@ export function AIChatPanel({ isOpen, onClose, initialContext, language = 'en', 
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
                 size="icon"
+                className="bg-gradient-to-r from-[#FF6B6B] to-[#FD8D8D] hover:from-[#FF5252] hover:to-[#FF7B7B]"
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
