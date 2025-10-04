@@ -11,14 +11,78 @@ serve(async (req) => {
   }
 
   try {
+    // Check request size
+    const contentLength = req.headers.get('content-length');
+    const MAX_REQUEST_SIZE = 50 * 1024; // 50KB
+    if (contentLength && parseInt(contentLength) > MAX_REQUEST_SIZE) {
+      console.error('Request too large:', contentLength);
+      return new Response(
+        JSON.stringify({ error: 'Request too large' }), 
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { fieldKey, userData, detailed = false, language = 'en' } = await req.json();
+
+    // Validate inputs
+    const validFieldKeys = [
+      'birthDate', 'gender', 'currentSalary', 'accountValue', 'subAccountValue',
+      'futureProjections', 'historicalSalaries', 'illnessPeriods', 'retirementAge',
+      'workStartYear', 'expectedPension', 'pensionGroups', 'minimumPension',
+      'averagePension', 'aboveAverage', 'contributionYears', 'sickLeave',
+      'simulation', 'employmentGaps', 'indexation'
+    ];
+    
+    const validLanguages = ['en', 'pl'];
+    
+    if (!fieldKey || !validFieldKeys.includes(fieldKey)) {
+      console.error('Invalid fieldKey:', fieldKey);
+      return new Response(
+        JSON.stringify({ error: 'Invalid fieldKey parameter' }), 
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    if (!validLanguages.includes(language)) {
+      console.error('Invalid language:', language);
+      return new Response(
+        JSON.stringify({ error: 'Invalid language parameter' }), 
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    if (typeof detailed !== 'boolean') {
+      console.error('Invalid detailed flag:', detailed);
+      return new Response(
+        JSON.stringify({ error: 'Invalid detailed parameter' }), 
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Sanitize userData
+    const sanitizeUserData = (data: any) => {
+      if (!data || typeof data !== 'object') return {};
+      
+      return {
+        age: typeof data?.age === 'number' ? Math.floor(Math.max(0, Math.min(120, data.age))) : null,
+        gender: ['male', 'female'].includes(data?.gender) ? data.gender : null,
+        sex: ['male', 'female'].includes(data?.sex) ? data.sex : null,
+        currentSalary: typeof data?.currentSalary === 'number' ? Math.floor(Math.max(0, data.currentSalary)) : null,
+        accountValue: typeof data?.accountValue === 'number' ? Math.floor(Math.max(0, data.accountValue)) : null,
+        workStartYear: typeof data?.workStartYear === 'number' ? Math.floor(Math.max(1950, Math.min(2050, data.workStartYear))) : null,
+        expectedPension: typeof data?.expectedPension === 'number' ? Math.floor(Math.max(0, data.expectedPension)) : null,
+      };
+    };
+    
+    const sanitizedUserData = sanitizeUserData(userData);
+    
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log('Generating education tip for field:', fieldKey, 'with user data:', userData, 'detailed:', detailed, 'language:', language);
+    console.log('Generating education tip for field:', fieldKey, 'detailed:', detailed, 'language:', language);
 
     const languageInstruction = language === 'pl' 
       ? 'CRITICAL: You MUST respond ONLY in Polish language (Polski). Do NOT use English.' 
@@ -100,7 +164,7 @@ Example good response (in the language specified above):
 Example bad response:
 "The contribution rate established by ZUS regulations stipulates that 19.52% of gross remuneration is allocated to the pension capital account, thereby determining future retirement benefits through actuarial calculations."`;
 
-    const userContext = buildUserContext(fieldKey, userData, detailed);
+    const userContext = buildUserContext(fieldKey, sanitizedUserData, detailed);
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
+import DOMPurify from "dompurify";
 
 export const EducationTipDisplay = () => {
   const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
@@ -107,7 +108,12 @@ export const EducationTipDisplay = () => {
                       ) : currentTip.detailedContent ? (
                         <div 
                           className="detailed-content text-sm"
-                          dangerouslySetInnerHTML={{ __html: currentTip.detailedContent }}
+                          dangerouslySetInnerHTML={{ 
+                            __html: DOMPurify.sanitize(currentTip.detailedContent, {
+                              ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'ol', 'li', 'strong', 'em', 'br', 'div', 'span'],
+                              ALLOWED_ATTR: ['style', 'class']
+                            })
+                          }}
                         />
                       ) : null}
                     </motion.div>
