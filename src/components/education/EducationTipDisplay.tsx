@@ -1,6 +1,6 @@
 import { useEducation } from "@/contexts/EducationContext";
 import { Card } from "@/components/ui/card";
-import { Lightbulb, X, Loader2, BookOpen } from "lucide-react";
+import { Lightbulb, X, Loader2, BookOpen, Pin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -9,7 +9,7 @@ import DOMPurify from "dompurify";
 import { useLocation } from "react-router-dom";
 
 export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } = {}) => {
-  const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
+  const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip, togglePanel } = useEducation();
   const { t } = useLocale();
   const [isExpanded, setIsExpanded] = useState(false);
   const location = useLocation();
@@ -97,6 +97,18 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
                           {t('education.didYouKnow')}
                         </h3>
                         <div className="flex items-center gap-1 shrink-0">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={() => {
+                              togglePanel();
+                              handleClose();
+                            }}
+                            title="Pin to Learning Center"
+                          >
+                            <Pin className="w-4 h-4" />
+                          </Button>
                           {!isExpanded && (
                             <Button
                               variant="ghost"

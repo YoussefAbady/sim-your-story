@@ -10,16 +10,20 @@ export interface EducationTip {
   content: string;
   icon?: string;
   detailedContent?: string;
+  timestamp?: number;
 }
 
 interface EducationContextType {
   currentTip: EducationTip | null;
   isLoading: boolean;
   isLoadingDetailed: boolean;
+  isPanelOpen: boolean;
+  tipHistory: EducationTip[];
   showTip: (tip: EducationTip) => void;
   showAITip: (fieldKey: string, userData?: any) => Promise<void>;
   loadDetailedContent: (fieldKey: string, userData?: any) => Promise<void>;
   hideTip: () => void;
+  togglePanel: () => void;
 }
 
 const EducationContext = createContext<EducationContextType | undefined>(undefined);
@@ -32,16 +36,27 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [currentTip, setCurrentTip] = useState<EducationTip | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetailed, setIsLoadingDetailed] = useState(false);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [tipHistory, setTipHistory] = useState<EducationTip[]>([]);
 
   const showTip = (tip: EducationTip) => {
     setCurrentTip(tip);
+  };
+
+  const addTipToHistory = (tip: EducationTip) => {
+    const tipWithTimestamp = { ...tip, timestamp: Date.now() };
+    setTipHistory(prev => [tipWithTimestamp, ...prev]);
   };
 
   const showAITip = async (fieldKey: string, userData?: any) => {
     // Check cache first with language
     const cacheKey = `${fieldKey}-${locale}-${JSON.stringify(userData || {})}`;
     if (tipCache.has(cacheKey)) {
-      setCurrentTip(tipCache.get(cacheKey)!);
+      const cachedTip = tipCache.get(cacheKey)!;
+      addTipToHistory(cachedTip);
+      if (!isPanelOpen) {
+        setCurrentTip(cachedTip);
+      }
       return;
     }
 
@@ -57,14 +72,20 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
         // Fallback to static tip
         const staticTip = EDUCATION_TIPS[fieldKey];
         if (staticTip) {
-          setCurrentTip(staticTip);
+          addTipToHistory(staticTip);
+          if (!isPanelOpen) {
+            setCurrentTip(staticTip);
+          }
         }
         return;
       }
 
       if (data) {
         tipCache.set(cacheKey, data);
-        setCurrentTip(data);
+        addTipToHistory(data);
+        if (!isPanelOpen) {
+          setCurrentTip(data);
+        }
         awardPoints('tip_read');
       }
     } catch (err) {
@@ -72,7 +93,10 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
       // Fallback to static tip
       const staticTip = EDUCATION_TIPS[fieldKey];
       if (staticTip) {
-        setCurrentTip(staticTip);
+        addTipToHistory(staticTip);
+        if (!isPanelOpen) {
+          setCurrentTip(staticTip);
+        }
       }
     } finally {
       setIsLoading(false);
@@ -109,8 +133,26 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
     setCurrentTip(null);
   };
 
+  const togglePanel = () => {
+    setIsPanelOpen(prev => !prev);
+    if (!isPanelOpen) {
+      setCurrentTip(null); // Hide popup when opening panel
+    }
+  };
+
   return (
-    <EducationContext.Provider value={{ currentTip, isLoading, isLoadingDetailed, showTip, showAITip, loadDetailedContent, hideTip }}>
+    <EducationContext.Provider value={{ 
+      currentTip, 
+      isLoading, 
+      isLoadingDetailed, 
+      isPanelOpen, 
+      tipHistory, 
+      showTip, 
+      showAITip, 
+      loadDetailedContent, 
+      hideTip, 
+      togglePanel 
+    }}>
       {children}
     </EducationContext.Provider>
   );

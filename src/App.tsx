@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { EducationProvider } from "@/contexts/EducationContext";
 import { EducationTipDisplay } from "@/components/education/EducationTipDisplay";
+import { EducationPanel } from "@/components/education/EducationPanel";
 import { GamificationProvider } from "@/contexts/GamificationContext";
 import { BadgeCollection } from "@/components/gamification/BadgeCollection";
 import { SessionSummary } from "@/components/gamification/SessionSummary";
@@ -25,6 +26,7 @@ const App = () => (
           <BadgeCollection />
           <SessionSummary />
           <BrowserRouter>
+            <EducationPanel />
             <EducationTipDisplay />
             <Routes>
               <Route path="/" element={<Index />} />
