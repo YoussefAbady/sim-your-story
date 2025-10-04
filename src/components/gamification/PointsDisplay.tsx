@@ -12,9 +12,12 @@ export const PointsDisplay = () => {
     earnedBadges,
     setShowBadgeModal,
     isLoading,
+    lockedBadges,
   } = useGamification();
   
   const nextMilestone = getNextMilestone(sessionPoints);
+  const allBadges = [...earnedBadges, ...(lockedBadges || [])];
+  const earnedCount = allBadges.filter((b) => sessionPoints >= b.points_required).length;
 
   if (isLoading) {
     return null;
@@ -59,7 +62,7 @@ export const PointsDisplay = () => {
           className="flex items-center gap-2 bg-accent/20 hover:bg-accent/30 transition-colors px-3 py-2 rounded-lg"
         >
           <Trophy className="w-4 h-4 text-accent" />
-          <span className="text-sm font-medium">{earnedBadges.length}</span>
+          <span className="text-sm font-medium">{earnedCount}</span>
         </button>
       </div>
 

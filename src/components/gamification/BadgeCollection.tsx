@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
 
 export const BadgeCollection = () => {
-  const { earnedBadges, lockedBadges, showBadgeModal, setShowBadgeModal, points } = useGamification();
+  const { earnedBadges, lockedBadges, showBadgeModal, setShowBadgeModal, sessionPoints } = useGamification();
 
   const allBadges = [...earnedBadges, ...lockedBadges].sort((a, b) => a.points_required - b.points_required);
-  const isEarned = (badgeId: string) => earnedBadges.some((b) => b.badge_id === badgeId);
+  const earnedCount = allBadges.filter((b) => sessionPoints >= b.points_required).length;
 
   return (
     <Dialog open={showBadgeModal} onOpenChange={setShowBadgeModal}>
@@ -18,16 +18,16 @@ export const BadgeCollection = () => {
           <DialogTitle className="text-2xl font-bold">Badge Collection</DialogTitle>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>
-              {earnedBadges.length} of {allBadges.length} badges earned
+              {earnedCount} of {allBadges.length} badges earned
             </span>
-            <Progress value={(earnedBadges.length / allBadges.length) * 100} className="h-2 flex-1" />
+            <Progress value={(earnedCount / allBadges.length) * 100} className="h-2 flex-1" />
           </div>
         </DialogHeader>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
           {allBadges.map((badge, index) => {
-            const earned = isEarned(badge.badge_id);
-            const progress = earned ? 100 : Math.min(100, (points / badge.points_required) * 100);
+            const earned = sessionPoints >= badge.points_required;
+            const progress = earned ? 100 : Math.min(100, (sessionPoints / badge.points_required) * 100);
 
             return (
               <motion.div
