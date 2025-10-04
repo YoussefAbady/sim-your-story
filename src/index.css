@@ -52,6 +52,12 @@
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.1);
     --shadow-lift: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+    /* Gamification tokens */
+    --badge-bronze: 25 75% 47%;
+    --badge-silver: 0 0% 75%;
+    --badge-gold: 45 100% 51%;
+    --points-glow: 211 64% 54%;
   }
 
   .dark {

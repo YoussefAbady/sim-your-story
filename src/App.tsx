@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { EducationProvider } from "@/contexts/EducationContext";
 import { EducationTipDisplay } from "@/components/education/EducationTipDisplay";
+import { GamificationProvider } from "@/contexts/GamificationContext";
+import { BadgeCollection } from "@/components/gamification/BadgeCollection";
 import Index from "./pages/Index";
 import Simulation from "./pages/Simulation";
 import Results from "./pages/Results";
@@ -16,25 +18,28 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <EducationProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <EducationTipDisplay />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/simulation" element={<Simulation />} />
-            <Route path="/results" element={<Results />} />
-            <Route path="/report" element={<ReportView />} />
-            <Route path="/admin/reports" element={<AdminReports />} />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </EducationProvider>
+    <GamificationProvider>
+      <EducationProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <EducationTipDisplay />
+          <BadgeCollection />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/simulation" element={<Simulation />} />
+              <Route path="/results" element={<Results />} />
+              <Route path="/report" element={<ReportView />} />
+              <Route path="/admin/reports" element={<AdminReports />} />
+              
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </EducationProvider>
+    </GamificationProvider>
   </QueryClientProvider>
 );
 

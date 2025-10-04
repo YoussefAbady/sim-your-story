@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { EDUCATION_TIPS } from '@/data/educationContent';
 import { useLocale } from '@/contexts/LocaleContext';
+import { awardPoints } from '@/services/gamificationService';
 
 export interface EducationTip {
   id: string;
@@ -64,6 +65,7 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
       if (data) {
         tipCache.set(cacheKey, data);
         setCurrentTip(data);
+        awardPoints('tip_read');
       }
     } catch (err) {
       console.error('Failed to generate AI tip:', err);
@@ -94,6 +96,7 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
 
       if (data?.detailedContent) {
         setCurrentTip(prev => prev ? { ...prev, detailedContent: data.detailedContent } : null);
+        awardPoints('detailed_tip_read');
       }
     } catch (err) {
       console.error('Failed to load detailed content:', err);

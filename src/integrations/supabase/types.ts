@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      badges: {
+        Row: {
+          badge_id: string
+          category: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          name: string
+          points_required: number
+        }
+        Insert: {
+          badge_id: string
+          category: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          name: string
+          points_required: number
+        }
+        Update: {
+          badge_id?: string
+          category?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          points_required?: number
+        }
+        Relationships: []
+      }
+      points_history: {
+        Row: {
+          action_type: string
+          created_at: string | null
+          id: string
+          points_earned: number
+          user_identifier: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string | null
+          id?: string
+          points_earned: number
+          user_identifier: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string | null
+          id?: string
+          points_earned?: number
+          user_identifier?: string
+        }
+        Relationships: []
+      }
       quizzes: {
         Row: {
           answers: Json | null
@@ -134,6 +191,62 @@ export type Database = {
           sex?: string
           sub_account_funds?: number | null
           time_of_use?: string
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string | null
+          id: string
+          user_identifier: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string | null
+          id?: string
+          user_identifier: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string | null
+          id?: string
+          user_identifier?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["badge_id"]
+          },
+        ]
+      }
+      user_points: {
+        Row: {
+          created_at: string | null
+          current_level: number | null
+          id: string
+          total_points: number | null
+          updated_at: string | null
+          user_identifier: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_level?: number | null
+          id?: string
+          total_points?: number | null
+          updated_at?: string | null
+          user_identifier: string
+        }
+        Update: {
+          created_at?: string | null
+          current_level?: number | null
+          id?: string
+          total_points?: number | null
+          updated_at?: string | null
+          user_identifier?: string
         }
         Relationships: []
       }

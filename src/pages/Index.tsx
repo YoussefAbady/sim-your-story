@@ -16,6 +16,7 @@ import { useEducation } from "@/contexts/EducationContext";
 import { useLocale } from "@/contexts/LocaleContext";
 import { EDUCATION_TIPS } from "@/data/educationContent";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import zusLogo from "@/assets/zus-logo.png";
 
 export default function Index() {
@@ -24,12 +25,19 @@ export default function Index() {
   const { t, locale } = useLocale();
   const [expectedPension, setExpectedPension] = useState<string>("3000");
 
-  const handleExpectedPensionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleExpectedPensionChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setExpectedPension(value);
     // Store in sessionStorage for use in results
     if (value) {
       sessionStorage.setItem("expectedPension", value);
+      // Award points for setting expected pension (only once)
+      const { awardPoints } = await import("@/services/gamificationService");
+      const hasSetExpectedPension = localStorage.getItem('hasSetExpectedPension');
+      if (!hasSetExpectedPension) {
+        await awardPoints('expected_pension_set');
+        localStorage.setItem('hasSetExpectedPension', 'true');
+      }
     }
   };
 
@@ -141,6 +149,9 @@ export default function Index() {
       </header>
 
       <main id="main-content" className="container mx-auto px-4 py-8 space-y-8">
+        {/* Points Display */}
+        <PointsDisplay />
+
         {/* Educational Welcome */}
         <Card className="bg-gradient-to-r from-primary/10 to-accent/10 border-primary/30 p-6">
           <div className="flex items-start gap-4">

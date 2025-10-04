@@ -111,7 +111,7 @@ class SessionTracker {
     }
   }
 
-  private getUserIdentifier(): string | null {
+  getUserIdentifier(): string | null {
     // Generate a simple browser fingerprint
     const fingerprint = `${navigator.userAgent}-${screen.width}x${screen.height}`;
     return btoa(fingerprint).substring(0, 50);
@@ -126,6 +126,12 @@ class SessionTracker {
     }
   }
 }
+
+// Export helper function
+export const getUserIdentifier = (): string => {
+  const fingerprint = `${navigator.userAgent}-${screen.width}x${screen.height}`;
+  return btoa(fingerprint).substring(0, 50);
+};
 
 // Initialize session tracking
 let sessionTracker: SessionTracker | null = null;
