@@ -109,15 +109,16 @@ export const QuizWizard = ({ open, onOpenChange }: QuizWizardProps) => {
   };
 
   const handleQuizComplete = async () => {
-    const score = ((correctAnswers + (selectedAnswer === currentQuestion.correctAnswer ? 1 : 0)) / QUIZ_QUESTIONS.length) * 100;
-    const pointsEarned = Math.round(score * 5); // Up to 500 points for perfect score
+    const finalCorrectCount = correctAnswers + (selectedAnswer === currentQuestion.correctAnswer ? 1 : 0);
+    const scorePercentage = (finalCorrectCount / QUIZ_QUESTIONS.length) * 100;
+    const pointsEarned = Math.round(scorePercentage * 5); // Up to 500 points for perfect score
     
     setQuizComplete(true);
 
     // Award session points
     awardSessionPoints('quiz_completed', pointsEarned, (newTotal, earned) => {
       toast.success(`Quiz Complete! 🎉`, {
-        description: `You earned ${earned} points! Score: ${score.toFixed(0)}%`,
+        description: `You earned ${earned} points! Score: ${scorePercentage.toFixed(0)}%`,
         duration: 5000,
       });
     });
@@ -130,7 +131,7 @@ export const QuizWizard = ({ open, onOpenChange }: QuizWizardProps) => {
 
       await supabase.from('quizzes').insert({
         quiz_type: 'pension_basics',
-        score: score,
+        score: finalCorrectCount, // Store correct answer count, not percentage
         total_questions: QUIZ_QUESTIONS.length,
         answers: userAnswers as any,
         quiz_data: QUIZ_QUESTIONS as any,
@@ -157,7 +158,8 @@ export const QuizWizard = ({ open, onOpenChange }: QuizWizardProps) => {
   };
 
   if (quizComplete) {
-    const finalScore = ((correctAnswers + (selectedAnswer === currentQuestion.correctAnswer ? 1 : 0)) / QUIZ_QUESTIONS.length) * 100;
+    const finalCorrectCount = correctAnswers + (selectedAnswer === currentQuestion.correctAnswer ? 1 : 0);
+    const finalScore = (finalCorrectCount / QUIZ_QUESTIONS.length) * 100;
     const pointsEarned = Math.round(finalScore * 5);
 
     return (
@@ -172,7 +174,7 @@ export const QuizWizard = ({ open, onOpenChange }: QuizWizardProps) => {
             <DialogTitle className="text-3xl mb-2">Quiz Complete! 🎉</DialogTitle>
             <p className="text-5xl font-bold text-primary my-4">{finalScore.toFixed(0)}%</p>
             <p className="text-lg mb-6">
-              You got {correctAnswers + (selectedAnswer === currentQuestion.correctAnswer ? 1 : 0)} out of {QUIZ_QUESTIONS.length} questions correct!
+              You got {finalCorrectCount} out of {QUIZ_QUESTIONS.length} questions correct!
             </p>
             <div className="bg-primary/10 rounded-lg p-4 mb-6">
               <p className="text-2xl font-bold text-primary">+{pointsEarned} Points Earned! 🌟</p>

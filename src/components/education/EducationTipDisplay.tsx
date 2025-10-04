@@ -46,9 +46,10 @@ export const EducationTipDisplay = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
+          className={`fixed bottom-6 right-6 transition-all duration-300 ${
             isExpanded ? 'max-w-2xl w-full' : 'max-w-md'
           }`}
+          style={{ zIndex: 9999 }}
         >
           <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30 shadow-lg max-h-[80vh] overflow-hidden flex flex-col relative">
             {isLoading ? (

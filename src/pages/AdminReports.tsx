@@ -49,7 +49,6 @@ interface SessionTime {
   start_time: string;
   end_time: string | null;
   duration_seconds: number | null;
-  page_path: string | null;
   created_at: string;
 }
 
@@ -85,7 +84,6 @@ export default function AdminReports() {
   const [endDate, setEndDate] = useState<string>("");
   const [sessionStartDate, setSessionStartDate] = useState<string>("");
   const [sessionEndDate, setSessionEndDate] = useState<string>("");
-  const [sessionPageFilter, setSessionPageFilter] = useState<string>("all");
 
   useEffect(() => {
     fetchAllData();
@@ -97,7 +95,7 @@ export default function AdminReports() {
 
   useEffect(() => {
     applySessionFilters();
-  }, [sessions, sessionStartDate, sessionEndDate, sessionPageFilter]);
+  }, [sessions, sessionStartDate, sessionEndDate]);
 
   const checkAdminAccess = async () => {
     try {
@@ -267,11 +265,6 @@ export default function AdminReports() {
       );
     }
 
-    // Filter by page
-    if (sessionPageFilter !== "all") {
-      filtered = filtered.filter(session => session.page_path === sessionPageFilter);
-    }
-
     setFilteredSessions(filtered);
   };
 
@@ -303,10 +296,6 @@ export default function AdminReports() {
     };
   };
 
-  const getUniquePages = () => {
-    const pages = new Set(sessions.map(s => s.page_path).filter(Boolean));
-    return Array.from(pages);
-  };
 
   const exportToExcel = () => {
     const exportData = filteredLogs.map(log => ({
@@ -360,7 +349,6 @@ export default function AdminReports() {
   const clearSessionFilters = () => {
     setSessionStartDate("");
     setSessionEndDate("");
-    setSessionPageFilter("all");
   };
 
 
@@ -570,11 +558,11 @@ export default function AdminReports() {
             <Card className="p-6 mb-6">
               <div className="flex items-center gap-2 mb-4">
                 <Filter className="w-5 h-5 text-primary" />
-                <h2 className="text-xl font-semibold text-foreground">Filters</h2>
+                <h2 className="text-xl font-semibold text-foreground">{t('admin.filters')}</h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="sessionStartDate">Start Date</Label>
+                  <Label htmlFor="sessionStartDate">{t('admin.startDate')}</Label>
                   <Input
                     id="sessionStartDate"
                     type="date"
@@ -584,7 +572,7 @@ export default function AdminReports() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="sessionEndDate">End Date</Label>
+                  <Label htmlFor="sessionEndDate">{t('admin.endDate')}</Label>
                   <Input
                     id="sessionEndDate"
                     type="date"
@@ -592,25 +580,10 @@ export default function AdminReports() {
                     onChange={(e) => setSessionEndDate(e.target.value)}
                   />
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="sessionPageFilter">Page</Label>
-                  <Select value={sessionPageFilter} onValueChange={setSessionPageFilter}>
-                    <SelectTrigger id="sessionPageFilter">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Pages</SelectItem>
-                      {getUniquePages().map(page => (
-                        <SelectItem key={page} value={page}>{page}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
               </div>
               <div className="flex justify-end mt-4">
                 <Button variant="outline" onClick={clearSessionFilters}>
-                  Clear Filters
+                  {t('admin.clearFilters')}
                 </Button>
               </div>
             </Card>
@@ -621,7 +594,7 @@ export default function AdminReports() {
                 <div className="flex items-center gap-3">
                   <Activity className="w-8 h-8 text-primary" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Total Sessions</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.totalSessions')}</p>
                     <p className="text-2xl font-bold text-foreground">{getSessionInsights().totalSessions}</p>
                   </div>
                 </div>
@@ -631,7 +604,7 @@ export default function AdminReports() {
                 <div className="flex items-center gap-3">
                   <Clock className="w-8 h-8 text-primary" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Avg. Session Time</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.avgSessionTime')}</p>
                     <p className="text-2xl font-bold text-foreground">
                       {getSessionInsights().avgDuration} min
                     </p>
@@ -643,7 +616,7 @@ export default function AdminReports() {
                 <div className="flex items-center gap-3">
                   <TrendingUp className="w-8 h-8 text-primary" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Sessions/Week</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.sessionsPerWeek')}</p>
                     <p className="text-2xl font-bold text-foreground">
                       {getSessionInsights().avgSessionsPerWeek}
                     </p>
@@ -655,7 +628,7 @@ export default function AdminReports() {
                 <div className="flex items-center gap-3">
                   <User className="w-8 h-8 text-primary" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Unique Users</p>
+                    <p className="text-sm text-muted-foreground">{t('admin.uniqueUsers')}</p>
                     <p className="text-2xl font-bold text-foreground">
                       {getSessionInsights().uniqueUsers}
                     </p>
@@ -666,22 +639,21 @@ export default function AdminReports() {
 
             {/* Session Table */}
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-4">Session Time Records</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">{t('admin.sessionRecords')}</h2>
               {isLoading ? (
-                <p className="text-center text-muted-foreground py-8">Loading...</p>
+                <p className="text-center text-muted-foreground py-8">{t('admin.loading')}</p>
               ) : filteredSessions.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No session records found</p>
+                <p className="text-center text-muted-foreground py-8">{t('admin.noRecords')}</p>
               ) : (
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Session ID</TableHead>
-                        <TableHead>User</TableHead>
-                        <TableHead>Start Time</TableHead>
-                        <TableHead>End Time</TableHead>
-                        <TableHead>Duration (min)</TableHead>
-                        <TableHead>Page</TableHead>
+                        <TableHead>{t('admin.sessionId')}</TableHead>
+                        <TableHead>{t('admin.user')}</TableHead>
+                        <TableHead>{t('admin.startTime')}</TableHead>
+                        <TableHead>{t('admin.endTime')}</TableHead>
+                        <TableHead>{t('admin.duration')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -698,7 +670,6 @@ export default function AdminReports() {
                               ? Math.round(session.duration_seconds / 60) 
                               : '-'}
                           </TableCell>
-                          <TableCell>{session.page_path || '-'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -711,22 +682,22 @@ export default function AdminReports() {
 
         {activeTab === 'quizzes' && (
           <Card className="p-6">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Quiz Results</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">{t('admin.quizResults')}</h2>
             {isLoading ? (
-              <p className="text-center text-muted-foreground py-8">Loading...</p>
+              <p className="text-center text-muted-foreground py-8">{t('admin.loading')}</p>
             ) : quizzes.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">No quiz records found</p>
+              <p className="text-center text-muted-foreground py-8">{t('admin.noRecords')}</p>
             ) : (
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Quiz Type</TableHead>
-                      <TableHead>Score</TableHead>
-                      <TableHead>Questions</TableHead>
-                      <TableHead>Completed At</TableHead>
+                      <TableHead>{t('admin.name')}</TableHead>
+                      <TableHead>{t('admin.email')}</TableHead>
+                      <TableHead>{t('admin.quizType')}</TableHead>
+                      <TableHead>{t('admin.score')}</TableHead>
+                      <TableHead>{t('admin.questions')}</TableHead>
+                      <TableHead>{t('admin.completedAt')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
