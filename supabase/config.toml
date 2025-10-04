@@ -1,1 +1,4 @@
 project_id = "ionwzcnnekdueixasouk"
+
+[functions.generate-education-tip]
+verify_jwt = false

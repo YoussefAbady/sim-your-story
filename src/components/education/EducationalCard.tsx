@@ -1,21 +1,18 @@
 import { Card } from "@/components/ui/card";
 import { useEducation } from "@/contexts/EducationContext";
-import { EDUCATION_TIPS } from "@/data/educationContent";
 import { ComponentProps } from "react";
 
 interface EducationalCardProps extends ComponentProps<typeof Card> {
   educationKey: string;
   children: React.ReactNode;
+  userData?: any;
 }
 
-export const EducationalCard = ({ educationKey, children, ...props }: EducationalCardProps) => {
-  const { showTip } = useEducation();
+export const EducationalCard = ({ educationKey, children, userData, ...props }: EducationalCardProps) => {
+  const { showAITip } = useEducation();
 
   const handleClick = () => {
-    const tip = EDUCATION_TIPS[educationKey];
-    if (tip) {
-      showTip(tip);
-    }
+    showAITip(educationKey, userData);
   };
 
   return (
