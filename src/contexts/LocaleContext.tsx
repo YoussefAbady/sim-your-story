@@ -18,6 +18,9 @@ export const LocaleProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem('locale', locale);
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = locale;
+    }
   }, [locale]);
 
   const setLocale = (newLocale: Locale) => {
@@ -102,6 +105,37 @@ const translations: Record<Locale, any> = {
       title: 'Ready to Plan Your Future?',
       subtitle: 'Start calculating your pension today',
       button: 'Get Started',
+    },
+    index: {
+      header: {
+        title: 'Retirement Education Center',
+        subtitle: 'Learn about your pension while planning your future',
+      },
+      welcome: {
+        title: 'Welcome to Your Pension Learning Journey',
+        body: "Understanding your pension doesn't have to be complicated! Click on any field or card to learn more about how it affects your retirement.",
+        hint: 'Look for the "Did You Know?" tips as you explore',
+      },
+      disclaimer: {
+        title: 'Educational Tool',
+        body: 'This simulator helps you learn about the Polish pension system. Based on official ZUS forecasts, GUS, NBP, and Ministry of Finance data.',
+      },
+      expected: {
+        label: 'What pension would you like in the future?',
+        hint: '(Click to learn more)',
+        helper: 'Enter your desired monthly pension amount (PLN)',
+        ariaLabel: 'Expected pension amount in PLN',
+      },
+      currentAverage: { label: 'Current average:' },
+      groups: {
+        title: 'Average Pension by Group',
+        subtitle: '(Click cards to learn)',
+        helper: 'Explore different pension levels and what they mean for you',
+        monthSuffix: 'PLN/month',
+      },
+      didyouknow: { title: 'Did You Know?' },
+      cta: { button: 'Start Pension Simulation' },
+      footer: { text: '© {year} ZUS. Educational simulator based on official forecasts.' },
     },
     simulation: {
       title: 'Pension Simulation',
@@ -195,6 +229,37 @@ const translations: Record<Locale, any> = {
       title: 'Gotowy Zaplanować Swoją Przyszłość?',
       subtitle: 'Zacznij obliczać swoją emeryturę już dziś',
       button: 'Rozpocznij',
+    },
+    index: {
+      header: {
+        title: 'Centrum Edukacji Emerytalnej',
+        subtitle: 'Poznaj zasady emerytury i zaplanuj swoją przyszłość',
+      },
+      welcome: {
+        title: 'Witamy w Twojej Podróży Emerytalnej',
+        body: 'Zrozumienie emerytury nie musi być trudne! Kliknij dowolne pole lub kartę, aby dowiedzieć się, jak wpływa na Twoją emeryturę.',
+        hint: 'Szukaj podpowiedzi „Czy wiesz, że?” podczas eksploracji',
+      },
+      disclaimer: {
+        title: 'Narzędzie Edukacyjne',
+        body: 'Ten symulator pomaga poznać polski system emerytalny. Oparty na oficjalnych prognozach ZUS, danych GUS, NBP i MF.',
+      },
+      expected: {
+        label: 'Jaką emeryturę chciałbyś/łabyś w przyszłości?',
+        hint: '(Kliknij, aby dowiedzieć się więcej)',
+        helper: 'Podaj oczekiwaną miesięczną kwotę emerytury (PLN)',
+        ariaLabel: 'Oczekiwana kwota emerytury w PLN',
+      },
+      currentAverage: { label: 'Średnia obecnie:' },
+      groups: {
+        title: 'Średnia Emerytura według Grupy',
+        subtitle: '(Kliknij karty, aby się uczyć)',
+        helper: 'Poznaj poziomy emerytur i co oznaczają dla Ciebie',
+        monthSuffix: 'PLN/miesiąc',
+      },
+      didyouknow: { title: 'Czy wiesz, że?' },
+      cta: { button: 'Rozpocznij symulację emerytury' },
+      footer: { text: '© {year} ZUS. Edukacyjny symulator oparty na oficjalnych prognozach.' },
     },
     simulation: {
       title: 'Symulacja Emerytury',
