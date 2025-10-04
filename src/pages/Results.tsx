@@ -20,6 +20,7 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarProvider,
+  SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -364,7 +365,8 @@ export default function Results() {
           </main>
         </div>
 
-        <Sidebar side="right" className="border-l" collapsible="offcanvas">
+        <Sidebar side="right" className="border-l min-w-80 max-w-2xl" collapsible="offcanvas">
+          <SidebarRail />
           <div className="p-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Settings className="w-5 h-5" />
