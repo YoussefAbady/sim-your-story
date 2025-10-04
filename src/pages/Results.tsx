@@ -148,8 +148,10 @@ export default function Results() {
 
   const handleDownloadReport = () => {
     // Store current state in sessionStorage for report
-    if (results) {
+    if (results && simulationInput) {
+      sessionStorage.setItem("simulationData", JSON.stringify(simulationInput));
       sessionStorage.setItem("simulationResults", JSON.stringify(results));
+      sessionStorage.setItem("expectedPension", expectedPension.toString());
       sessionStorage.setItem("historicalSalaries", JSON.stringify(historicalSalaries));
       sessionStorage.setItem("futureSalaries", JSON.stringify(futureSalaries));
       sessionStorage.setItem("illnessPeriods", JSON.stringify(illnessPeriods));
@@ -164,8 +166,10 @@ export default function Results() {
 
   const handleViewReport = () => {
     // Store current state for report view
-    if (results) {
+    if (results && simulationInput) {
+      sessionStorage.setItem("simulationData", JSON.stringify(simulationInput));
       sessionStorage.setItem("simulationResults", JSON.stringify(results));
+      sessionStorage.setItem("expectedPension", expectedPension.toString());
       sessionStorage.setItem("historicalSalaries", JSON.stringify(historicalSalaries));
       sessionStorage.setItem("futureSalaries", JSON.stringify(futureSalaries));
       sessionStorage.setItem("illnessPeriods", JSON.stringify(illnessPeriods));

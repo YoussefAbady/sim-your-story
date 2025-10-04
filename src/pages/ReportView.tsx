@@ -18,27 +18,33 @@ export default function ReportView() {
   const [customIndexation, setCustomIndexation] = useState<number | null>(null);
 
   useEffect(() => {
-    const storedData = sessionStorage.getItem("simulationData");
-    const storedResults = sessionStorage.getItem("simulationResults");
-    const storedExpected = sessionStorage.getItem("expectedPension");
-    const storedHistorical = sessionStorage.getItem("historicalSalaries");
-    const storedFuture = sessionStorage.getItem("futureSalaries");
-    const storedIllness = sessionStorage.getItem("illnessPeriods");
-    const storedIndexation = sessionStorage.getItem("customIndexation");
+    try {
+      const storedData = sessionStorage.getItem("simulationData");
+      const storedResults = sessionStorage.getItem("simulationResults");
+      const storedExpected = sessionStorage.getItem("expectedPension");
+      const storedHistorical = sessionStorage.getItem("historicalSalaries");
+      const storedFuture = sessionStorage.getItem("futureSalaries");
+      const storedIllness = sessionStorage.getItem("illnessPeriods");
+      const storedIndexation = sessionStorage.getItem("customIndexation");
 
-    if (!storedData || !storedResults) {
+      if (!storedData || !storedResults) {
+        console.log("Missing simulation data, redirecting to simulation page");
+        navigate("/simulation");
+        return;
+      }
+
+      setSimulationInput(JSON.parse(storedData));
+      setResults(JSON.parse(storedResults));
+      
+      if (storedExpected) setExpectedPension(parseFloat(storedExpected));
+      if (storedHistorical) setHistoricalSalaries(JSON.parse(storedHistorical));
+      if (storedFuture) setFutureSalaries(JSON.parse(storedFuture));
+      if (storedIllness) setIllnessPeriods(JSON.parse(storedIllness));
+      if (storedIndexation) setCustomIndexation(parseFloat(storedIndexation));
+    } catch (error) {
+      console.error("Error loading report data:", error);
       navigate("/simulation");
-      return;
     }
-
-    setSimulationInput(JSON.parse(storedData));
-    setResults(JSON.parse(storedResults));
-    
-    if (storedExpected) setExpectedPension(parseFloat(storedExpected));
-    if (storedHistorical) setHistoricalSalaries(JSON.parse(storedHistorical));
-    if (storedFuture) setFutureSalaries(JSON.parse(storedFuture));
-    if (storedIllness) setIllnessPeriods(JSON.parse(storedIllness));
-    if (storedIndexation) setCustomIndexation(parseFloat(storedIndexation));
   }, [navigate]);
 
   const handlePrint = () => {
