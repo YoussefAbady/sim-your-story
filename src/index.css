@@ -96,4 +96,42 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .detailed-content h3 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    margin-bottom: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .detailed-content h4 {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .detailed-content p {
+    margin-bottom: 1rem;
+    line-height: 1.625;
+  }
+
+  .detailed-content ul {
+    margin-left: 1.25rem;
+    margin-bottom: 1rem;
+    list-style-type: disc;
+  }
+
+  .detailed-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.625;
+  }
+
+  .detailed-content strong {
+    font-weight: 600;
+  }
+
+  .detailed-content em {
+    font-style: italic;
+  }
 }

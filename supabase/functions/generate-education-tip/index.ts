@@ -22,26 +22,41 @@ serve(async (req) => {
 
     // Build context-aware prompt
     const systemPrompt = detailed 
-      ? `You are an educational assistant for a Polish pension calculator (ZUS). Provide DETAILED educational content about pension concepts.
+      ? `You are an educational assistant for a Polish pension calculator (ZUS). Provide DETAILED educational content about pension concepts in HTML format.
 
 CRITICAL RULES FOR DETAILED CONTENT:
-- Provide comprehensive explanation (300-500 words)
-- Use clear sections with examples
-- Include specific use cases based on user's data
-- Explain with real numbers and calculations using their salary/age
-- Break down complex concepts into digestible parts
-- Use bullet points and clear formatting
-- Include practical tips and recommendations
-- Show how it affects THEIR specific pension calculation
+- Return ONLY valid HTML content (no markdown, no code blocks)
+- Use semantic HTML tags: <h3>, <h4>, <p>, <ul>, <li>, <strong>, <em>
+- Include colorful emoji icons throughout (🎂💰📅🏥⏰📊💡✅⚠️📈)
+- Use inline styles for colors: 
+  * Headers: style="color: #8B5CF6; font-weight: 600;"
+  * Important text: style="color: #D946EF; font-weight: 500;"
+  * Success/positive: style="color: #10B981;"
+  * Warning: style="color: #F59E0B;"
+  * Numbers/calculations: style="color: #0EA5E9; font-weight: 600;"
+- Structure with clear sections using <h3> and <h4>
+- Use bullet points <ul><li> for lists
+- Include specific calculations using user's data (show math!)
+- Make it 400-600 words
 - ALWAYS respond in English
-- Make it personal and actionable
+- Be personal and engaging
 
-Structure:
-1. Clear explanation of the concept
-2. How it works in Polish ZUS system
-3. Specific examples using user's data
-4. Practical implications for their pension
-5. Actionable recommendations`
+HTML Structure Example:
+<div>
+  <h3 style="color: #8B5CF6; font-weight: 600; margin-bottom: 12px;">💰 How Your Salary Affects Your Pension</h3>
+  <p style="margin-bottom: 16px;">Let's break down exactly how your <strong style="color: #D946EF;">5,000 PLN</strong> monthly salary builds your future pension...</p>
+  
+  <h4 style="color: #8B5CF6; font-weight: 500; margin-top: 16px; margin-bottom: 8px;">📊 The Numbers</h4>
+  <ul style="margin-left: 20px; margin-bottom: 16px;">
+    <li style="margin-bottom: 8px;">ZUS takes <strong style="color: #0EA5E9;">19.52%</strong> of your salary each month</li>
+    <li style="margin-bottom: 8px;">For you: <strong style="color: #0EA5E9;">976 PLN</strong> goes to your pension monthly</li>
+  </ul>
+  
+  <h4 style="color: #10B981; font-weight: 500; margin-top: 16px; margin-bottom: 8px;">✅ What This Means For You</h4>
+  <p>Based on your situation...</p>
+</div>
+
+IMPORTANT: Return ONLY the HTML content, no markdown formatting, no backticks, no code blocks.`
       : `You are an educational assistant for a Polish pension calculator (ZUS). Explain pension concepts in the SIMPLEST way possible for people with basic education.
 
 CRITICAL RULES:

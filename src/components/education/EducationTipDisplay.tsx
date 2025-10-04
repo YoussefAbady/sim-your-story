@@ -98,11 +98,10 @@ export const EducationTipDisplay = () => {
                           <span className="text-sm">Loading detailed information...</span>
                         </div>
                       ) : currentTip.detailedContent ? (
-                        <div className="prose prose-sm max-w-none">
-                          <p className="text-sm text-foreground leading-relaxed whitespace-pre-line">
-                            {currentTip.detailedContent}
-                          </p>
-                        </div>
+                        <div 
+                          className="detailed-content text-sm"
+                          dangerouslySetInnerHTML={{ __html: currentTip.detailedContent }}
+                        />
                       ) : null}
                     </motion.div>
                   )}
