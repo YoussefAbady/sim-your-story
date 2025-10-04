@@ -200,7 +200,7 @@ export default function Results() {
   const randomFact = PENSION_FACTS[Math.floor(Math.random() * PENSION_FACTS.length)];
 
   return (
-    <SidebarProvider defaultOpen={false} style={{ ["--sidebar-width" as any]: "60vw" } as CSSProperties}>
+    <SidebarProvider defaultOpen={false} style={{ ["--sidebar-width" as any]: "30vw" } as CSSProperties}>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-secondary/20 to-background relative overflow-hidden">
         <AnimatedBackground variant="orbs" className="opacity-40" />
         <div className="flex-1 flex flex-col min-h-screen">
