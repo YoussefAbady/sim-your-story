@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw } from "lucide-react";
 import { PensionEngine, SimulationInput, SimulationResult } from "@/services/pensionEngine";
 import { PENSION_FACTS } from "@/services/pensionData";
 import {
@@ -51,6 +51,7 @@ export default function Results() {
   const [illnessPeriods, setIllnessPeriods] = useState<IllnessPeriod[]>([]);
   const [customIndexation, setCustomIndexation] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState("growth");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     // Retrieve simulation data from sessionStorage
@@ -84,6 +85,18 @@ export default function Results() {
     // TODO: Apply advanced settings to input before simulation
     const simulationResults = PensionEngine.simulate(input);
     setResults(simulationResults);
+  };
+
+  const handleUpdateForecast = () => {
+    if (!simulationInput) return;
+    
+    setIsUpdating(true);
+    
+    // Simulate a brief calculation delay for better UX
+    setTimeout(() => {
+      runSimulation(simulationInput);
+      setIsUpdating(false);
+    }, 300);
   };
 
   if (!results || !simulationInput) {
@@ -373,6 +386,17 @@ export default function Results() {
             <SidebarTrigger />
           </div>
           <SidebarContent>
+            <div className="p-4 border-b">
+              <Button 
+                onClick={handleUpdateForecast}
+                disabled={isUpdating}
+                className="w-full gap-2"
+                size="lg"
+              >
+                <RefreshCw className={`w-4 h-4 ${isUpdating ? 'animate-spin' : ''}`} />
+                {isUpdating ? 'Updating...' : 'Update Forecast'}
+              </Button>
+            </div>
             <SidebarGroup>
               <SidebarGroupContent>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
