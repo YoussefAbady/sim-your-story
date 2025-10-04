@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { AlertCircle, Calculator } from "lucide-react";
+import { SICK_LEAVE_DATA } from "@/services/pensionData";
 import {
   Form,
   FormControl,
@@ -82,8 +83,10 @@ export default function Simulation() {
     }, 500);
   };
 
-  // Average sick leave days by sex (mock data)
-  const avgSickLeaveDays = watchSex === "female" ? 14 : 10;
+  // Get actual sick leave data from pension data
+  const maleSickLeaveDays = SICK_LEAVE_DATA.male.lifetimeAvgDays;
+  const femaleSickLeaveDays = SICK_LEAVE_DATA.female.lifetimeAvgDays;
+  const currentGenderSickLeave = watchSex === "female" ? femaleSickLeaveDays : maleSickLeaveDays;
 
   return (
     <div className="min-h-screen bg-background">
@@ -263,7 +266,7 @@ export default function Simulation() {
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Include Sick Leave Possibility</FormLabel>
                         <FormDescription>
-                          Model impact of average sick leave ({avgSickLeaveDays} days/year for {watchSex}s)
+                          Model impact of average sick leave over lifetime: {maleSickLeaveDays} days for men, {femaleSickLeaveDays} days for women (your selection: {currentGenderSickLeave} days)
                         </FormDescription>
                       </div>
                       <FormControl>
