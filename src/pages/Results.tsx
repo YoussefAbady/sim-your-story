@@ -2,6 +2,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { EducationTipDisplay } from "@/components/education/EducationTipDisplay";
 import zusLogo from "@/assets/zus-logo.png";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw, Download, Mail, Eye, Brain } from "lucide-react";
@@ -204,6 +205,7 @@ export default function Results() {
   return (
     <>
       <Toaster sidebarOpen={sidebarOpen} />
+      <EducationTipDisplay sidebarOpen={sidebarOpen} />
       <SidebarProvider defaultOpen={false} style={{ ["--sidebar-width" as any]: "30vw" } as CSSProperties} open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-secondary/20 to-background relative overflow-hidden">
           <AnimatedBackground variant="orbs" className="opacity-40" />

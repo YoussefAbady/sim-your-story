@@ -6,11 +6,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import DOMPurify from "dompurify";
+import { useLocation } from "react-router-dom";
 
-export const EducationTipDisplay = () => {
+export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } = {}) => {
   const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
   const { t } = useLocale();
   const [isExpanded, setIsExpanded] = useState(false);
+  const location = useLocation();
+  const isResultsPage = location.pathname === '/results';
 
   // Reset expanded state when tip changes
   useEffect(() => {
@@ -38,6 +41,11 @@ export const EducationTipDisplay = () => {
     hideTip();
   };
 
+  // Don't render on results page (it has its own instance)
+  if (isResultsPage) {
+    return null;
+  }
+
   return (
     <AnimatePresence>
       {(currentTip || isLoading) && (
@@ -46,7 +54,7 @@ export const EducationTipDisplay = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className={`fixed bottom-6 right-6 transition-all duration-300 ${
+          className={`fixed bottom-6 ${sidebarOpen ? 'right-[calc(30vw+1.5rem)]' : 'right-6'} transition-all duration-300 ${
             isExpanded ? 'max-w-2xl w-full' : 'max-w-md'
           }`}
           style={{ zIndex: 9999 }}
