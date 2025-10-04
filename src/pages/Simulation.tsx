@@ -30,6 +30,7 @@ import { EducationalInput } from "@/components/education/EducationalInput";
 import { EducationalCard } from "@/components/education/EducationalCard";
 import { useEducation } from "@/contexts/EducationContext";
 import { EDUCATION_TIPS } from "@/data/educationContent";
+import { useLocale } from "@/contexts/LocaleContext";
 
 const currentYear = new Date().getFullYear();
 
@@ -50,6 +51,7 @@ type SimulationFormData = z.infer<typeof simulationSchema>;
 export default function Simulation() {
   const navigate = useNavigate();
   const { showAITip } = useEducation();
+  const { t } = useLocale();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Calculate default retirement year based on current age and sex
@@ -112,7 +114,7 @@ export default function Simulation() {
               className="h-12 md:h-14 w-auto cursor-pointer hover:opacity-80 transition-opacity"
             />
           </Link>
-          <h1 className="text-2xl font-bold text-foreground">Retirement Simulator</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t('simulation.retirementSimulator')}</h1>
         </div>
       </header>
 
@@ -124,9 +126,9 @@ export default function Simulation() {
               <Lightbulb className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h2 className="font-semibold text-foreground mb-1">Learn as You Go!</h2>
+              <h2 className="font-semibold text-foreground mb-1">{t('simulation.learnAsYouGo')}</h2>
               <p className="text-sm text-muted-foreground">
-                Click on any field to learn how it affects your pension. We'll show you "Did You Know" tips to help you understand the calculation.
+                {t('simulation.clickFieldsHint')}
               </p>
             </div>
           </div>
@@ -137,7 +139,7 @@ export default function Simulation() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Required Fields Section */}
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-foreground">Required Information</h2>
+                <h2 className="text-xl font-semibold text-foreground">{t('simulation.requiredInfo')}</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
@@ -145,7 +147,7 @@ export default function Simulation() {
                     name="age"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Current Age</FormLabel>
+                        <FormLabel>{t('simulation.currentAge')}</FormLabel>
                         <FormControl>
                           <EducationalInput 
                             type="number" 
@@ -166,7 +168,7 @@ export default function Simulation() {
                     name="sex"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Sex</FormLabel>
+                        <FormLabel>{t('simulation.sex')}</FormLabel>
                         <Select 
                           onValueChange={(value) => {
                             field.onChange(value);
@@ -181,8 +183,8 @@ export default function Simulation() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="male">Male (retirement at 65)</SelectItem>
-                            <SelectItem value="female">Female (retirement at 60)</SelectItem>
+                            <SelectItem value="male">{t('simulation.maleRetirement')}</SelectItem>
+                            <SelectItem value="female">{t('simulation.femaleRetirement')}</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -196,7 +198,7 @@ export default function Simulation() {
                   name="grossSalary"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Current Gross Monthly Salary (PLN)</FormLabel>
+                      <FormLabel>{t('simulation.currentSalary')}</FormLabel>
                       <FormControl>
                         <EducationalInput 
                           type="number" 
@@ -207,7 +209,7 @@ export default function Simulation() {
                           userData={form.getValues()}
                         />
                       </FormControl>
-                      <FormDescription>Your current monthly gross salary in PLN</FormDescription>
+                      <FormDescription>{t('simulation.salaryDescription')}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -219,7 +221,7 @@ export default function Simulation() {
                     name="startYear"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Year Started Working</FormLabel>
+                        <FormLabel>{t('simulation.yearStartedWorking')}</FormLabel>
                         <FormControl>
                           <EducationalInput 
                             type="number" 
@@ -231,7 +233,7 @@ export default function Simulation() {
                             userData={form.getValues()}
                           />
                         </FormControl>
-                        <FormDescription id="start-year-note">Calculations use January of this year</FormDescription>
+                        <FormDescription id="start-year-note">{t('simulation.startYearNote')}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -242,7 +244,7 @@ export default function Simulation() {
                     name="endYear"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Planned Retirement Year</FormLabel>
+                        <FormLabel>{t('simulation.plannedRetirement')}</FormLabel>
                         <FormControl>
                           <EducationalInput 
                             type="number" 
@@ -255,7 +257,7 @@ export default function Simulation() {
                           />
                         </FormControl>
                         <FormDescription id="end-year-note">
-                          Default: {getRetirementYear(watchAge, watchSex)} (legal retirement age)
+                          {t('simulation.defaultRetirement').replace('{year}', String(getRetirementYear(watchAge, watchSex)))}
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -266,24 +268,24 @@ export default function Simulation() {
 
               {/* Optional Fields Section */}
               <div className="space-y-4 pt-6 border-t border-border">
-                <h2 className="text-xl font-semibold text-foreground">Optional Information</h2>
+                <h2 className="text-xl font-semibold text-foreground">{t('simulation.optionalInfo')}</h2>
                 
                 <FormField
                   control={form.control}
                   name="postalCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Postal Code</FormLabel>
-                      <FormControl>
-                        <EducationalInput 
-                          type="text" 
-                          placeholder="00-000" 
-                          {...field} 
-                          educationKey="employmentGaps"
-                          userData={form.getValues()}
-                        />
-                      </FormControl>
-                      <FormDescription>Helps us provide more accurate regional analysis</FormDescription>
+                        <FormLabel>{t('simulation.postalCode')}</FormLabel>
+                        <FormControl>
+                          <EducationalInput 
+                            type="text" 
+                            placeholder="00-000" 
+                            {...field} 
+                            educationKey="employmentGaps"
+                            userData={form.getValues()}
+                          />
+                        </FormControl>
+                        <FormDescription>{t('simulation.postalCodeHelper')}</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -295,7 +297,7 @@ export default function Simulation() {
                     name="accountFunds"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Funds in ZUS Account (PLN)</FormLabel>
+                        <FormLabel>{t('simulation.accountFunds')}</FormLabel>
                         <FormControl>
                           <EducationalInput 
                             type="number" 
@@ -305,7 +307,7 @@ export default function Simulation() {
                             userData={form.getValues()}
                           />
                         </FormControl>
-                        <FormDescription>Leave blank to estimate</FormDescription>
+                        <FormDescription>{t('simulation.leaveBlank')}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -316,7 +318,7 @@ export default function Simulation() {
                     name="subAccountFunds"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Funds in Sub-Account (PLN)</FormLabel>
+                        <FormLabel>{t('simulation.subAccountFunds')}</FormLabel>
                         <FormControl>
                           <EducationalInput 
                             type="number" 
@@ -326,7 +328,7 @@ export default function Simulation() {
                             userData={form.getValues()}
                           />
                         </FormControl>
-                        <FormDescription>Leave blank to estimate</FormDescription>
+                        <FormDescription>{t('simulation.leaveBlank')}</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -342,9 +344,9 @@ export default function Simulation() {
                       onClick={() => showAITip('sickLeave', form.getValues())}
                     >
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">Include Sick Leave Possibility</FormLabel>
+                        <FormLabel className="text-base">{t('simulation.includeSickLeave')}</FormLabel>
                         <FormDescription>
-                          Model impact of average sick leave over lifetime: {maleSickLeaveDays} days for men, {femaleSickLeaveDays} days for women (your selection: {currentGenderSickLeave} days)
+                          {t('simulation.sickLeaveDesc').replace('{male}', String(maleSickLeaveDays)).replace('{female}', String(femaleSickLeaveDays)).replace('{current}', String(currentGenderSickLeave))}
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -364,12 +366,12 @@ export default function Simulation() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-accent shrink-0 mt-0.5" aria-hidden="true" />
                   <div className="text-sm text-foreground">
-                    <p className="font-semibold mb-1">Important Notes:</p>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>All year inputs refer to January of that year</li>
-                      <li>Legal retirement age: 65 (male), 60 (female)</li>
-                      <li>Results are educational forecasts, not guarantees</li>
-                    </ul>
+                  <p className="font-semibold mb-1">{t('simulation.importantNotes')}</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>{t('simulation.note1')}</li>
+                    <li>{t('simulation.note2')}</li>
+                    <li>{t('simulation.note3')}</li>
+                  </ul>
                   </div>
                 </div>
               </Card>
@@ -383,7 +385,7 @@ export default function Simulation() {
                   disabled={isSubmitting}
                 >
                   <Calculator className="w-5 h-5" aria-hidden="true" />
-                  {isSubmitting ? "Calculating..." : "Forecast My Future Pension"}
+                  {isSubmitting ? t('simulation.calculating') : t('simulation.forecastPension')}
                 </Button>
               </div>
             </form>

@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface SimulationLog {
   id: string;
@@ -68,6 +69,7 @@ interface Quiz {
 export default function AdminReports() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLocale();
   const [logs, setLogs] = useState<SimulationLog[]>([]);
   const [filteredLogs, setFilteredLogs] = useState<SimulationLog[]>([]);
   const [sessions, setSessions] = useState<SessionTime[]>([]);
@@ -312,16 +314,16 @@ export default function AdminReports() {
                 className="gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back
+                {t('admin.back')}
               </Button>
               <div>
-                <h1 className="text-3xl font-bold text-foreground">Usage Reports</h1>
-                <p className="text-muted-foreground mt-1">Pension simulator analytics</p>
+                <h1 className="text-3xl font-bold text-foreground">{t('admin.title')}</h1>
+                <p className="text-muted-foreground mt-1">{t('admin.subtitle')}</p>
               </div>
             </div>
             <Button onClick={exportToExcel} className="gap-2" disabled={filteredLogs.length === 0}>
               <Download className="w-4 h-4" />
-              Export to Excel
+              {t('admin.exportExcel')}
             </Button>
           </div>
         </div>
@@ -334,19 +336,19 @@ export default function AdminReports() {
             variant={activeTab === 'simulations' ? 'default' : 'outline'}
             onClick={() => setActiveTab('simulations')}
           >
-            Simulations
+            {t('admin.simulations')}
           </Button>
           <Button
             variant={activeTab === 'sessions' ? 'default' : 'outline'}
             onClick={() => setActiveTab('sessions')}
           >
-            Session Time
+            {t('admin.sessionTime')}
           </Button>
           <Button
             variant={activeTab === 'quizzes' ? 'default' : 'outline'}
             onClick={() => setActiveTab('quizzes')}
           >
-            Quizzes
+            {t('admin.quizzes')}
           </Button>
         </div>
 
@@ -356,39 +358,39 @@ export default function AdminReports() {
             <Card className="p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Filter className="w-5 h-5 text-primary" />
-            <h2 className="text-xl font-semibold text-foreground">Filters</h2>
+            <h2 className="text-xl font-semibold text-foreground">{t('admin.filters')}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="filterSex">Sex</Label>
+              <Label htmlFor="filterSex">{t('admin.sex')}</Label>
               <Select value={filterSex} onValueChange={setFilterSex}>
                 <SelectTrigger id="filterSex">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="all">{t('admin.all')}</SelectItem>
+                  <SelectItem value="male">{t('admin.male')}</SelectItem>
+                  <SelectItem value="female">{t('admin.female')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="filterIllness">Illness Included</Label>
+              <Label htmlFor="filterIllness">{t('admin.illnessIncluded')}</Label>
               <Select value={filterIllness} onValueChange={setFilterIllness}>
                 <SelectTrigger id="filterIllness">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="yes">Yes</SelectItem>
-                  <SelectItem value="no">No</SelectItem>
+                  <SelectItem value="all">{t('admin.all')}</SelectItem>
+                  <SelectItem value="yes">{t('admin.yes')}</SelectItem>
+                  <SelectItem value="no">{t('admin.no')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="startDate">Start Date</Label>
+              <Label htmlFor="startDate">{t('admin.startDate')}</Label>
               <Input
                 id="startDate"
                 type="date"
@@ -398,7 +400,7 @@ export default function AdminReports() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="endDate">End Date</Label>
+              <Label htmlFor="endDate">{t('admin.endDate')}</Label>
               <Input
                 id="endDate"
                 type="date"
@@ -409,7 +411,7 @@ export default function AdminReports() {
           </div>
           <div className="flex justify-end mt-4">
             <Button variant="outline" onClick={clearFilters}>
-              Clear Filters
+              {t('admin.clearFilters')}
             </Button>
           </div>
         </Card>
@@ -420,7 +422,7 @@ export default function AdminReports() {
             <div className="flex items-center gap-3">
               <Calendar className="w-8 h-8 text-primary" />
               <div>
-                <p className="text-sm text-muted-foreground">Total Simulations</p>
+                <p className="text-sm text-muted-foreground">{t('admin.totalSimulations')}</p>
                 <p className="text-2xl font-bold text-foreground">{filteredLogs.length}</p>
               </div>
             </div>
@@ -430,7 +432,7 @@ export default function AdminReports() {
             <div className="flex items-center gap-3">
               <User className="w-8 h-8 text-primary" />
               <div>
-                <p className="text-sm text-muted-foreground">Average Age</p>
+                <p className="text-sm text-muted-foreground">{t('admin.averageAge')}</p>
                 <p className="text-2xl font-bold text-foreground">
                   {filteredLogs.length > 0
                     ? Math.round(filteredLogs.reduce((sum, log) => sum + log.age, 0) / filteredLogs.length)
@@ -444,7 +446,7 @@ export default function AdminReports() {
             <div className="flex items-center gap-3">
               <DollarSign className="w-8 h-8 text-primary" />
               <div>
-                <p className="text-sm text-muted-foreground">Avg. Salary</p>
+                <p className="text-sm text-muted-foreground">{t('admin.avgSalary')}</p>
                 <p className="text-2xl font-bold text-foreground">
                   {filteredLogs.length > 0
                     ? Math.round(filteredLogs.reduce((sum, log) => sum + log.salary_amount, 0) / filteredLogs.length).toLocaleString('pl-PL')
@@ -457,25 +459,25 @@ export default function AdminReports() {
 
         {/* Data Table */}
         <Card className="p-6">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Simulation Records</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">{t('admin.simulationRecords')}</h2>
           {isLoading ? (
-            <p className="text-center text-muted-foreground py-8">Loading...</p>
+            <p className="text-center text-muted-foreground py-8">{t('admin.loading')}</p>
           ) : filteredLogs.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">No records found</p>
+            <p className="text-center text-muted-foreground py-8">{t('admin.noRecords')}</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Age</TableHead>
-                    <TableHead>Sex</TableHead>
-                    <TableHead>Salary</TableHead>
-                    <TableHead>Illness</TableHead>
-                    <TableHead>Actual Pension</TableHead>
-                    <TableHead>Real Pension</TableHead>
-                    <TableHead>Postal Code</TableHead>
+                    <TableHead>{t('admin.date')}</TableHead>
+                    <TableHead>{t('admin.time')}</TableHead>
+                    <TableHead>{t('admin.age')}</TableHead>
+                    <TableHead>{t('admin.sex')}</TableHead>
+                    <TableHead>{t('admin.salary')}</TableHead>
+                    <TableHead>{t('admin.illness')}</TableHead>
+                    <TableHead>{t('admin.actualPension')}</TableHead>
+                    <TableHead>{t('admin.realPension')}</TableHead>
+                    <TableHead>{t('admin.postalCode')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -486,7 +488,7 @@ export default function AdminReports() {
                       <TableCell>{log.age}</TableCell>
                       <TableCell className="capitalize">{log.sex}</TableCell>
                       <TableCell>{log.salary_amount.toLocaleString('pl-PL')} PLN</TableCell>
-                      <TableCell>{log.illness_included ? 'Yes' : 'No'}</TableCell>
+                      <TableCell>{log.illness_included ? t('admin.yes') : t('admin.no')}</TableCell>
                       <TableCell>{log.actual_pension.toLocaleString('pl-PL')} PLN</TableCell>
                       <TableCell>{log.real_pension.toLocaleString('pl-PL')} PLN</TableCell>
                       <TableCell>{log.postal_code || 'N/A'}</TableCell>

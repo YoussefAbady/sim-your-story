@@ -40,6 +40,7 @@ import { EducationalInput } from "@/components/education/EducationalInput";
 import { EducationalCard } from "@/components/education/EducationalCard";
 import { useEducation } from "@/contexts/EducationContext";
 import { EDUCATION_TIPS } from "@/data/educationContent";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export interface SalaryPeriod {
   id: string;
@@ -57,6 +58,7 @@ export interface IllnessPeriod {
 export default function Results() {
   const navigate = useNavigate();
   const { showTip } = useEducation();
+  const { t } = useLocale();
   const [simulationInput, setSimulationInput] = useState<SimulationInput | null>(null);
   const [results, setResults] = useState<SimulationResult | null>(null);
   const [expectedPension, setExpectedPension] = useState<number>(0);
@@ -183,7 +185,7 @@ export default function Results() {
   if (!results || !simulationInput) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading results...</p>
+        <p className="text-muted-foreground">{t('results.loadingResults')}</p>
       </div>
     );
   }
@@ -209,7 +211,7 @@ export default function Results() {
                     aria-label="Back to simulation form"
                   >
                     <ArrowLeft className="w-4 h-4" />
-                    Back
+                    {t('results.back')}
                   </Button>
                   <Link to="/">
                     <img 
@@ -218,11 +220,11 @@ export default function Results() {
                       className="h-10 md:h-12 w-auto cursor-pointer hover:opacity-80 transition-opacity"
                     />
                   </Link>
-                  <h1 className="text-xl md:text-2xl font-bold text-foreground">Retirement Simulator</h1>
+                  <h1 className="text-xl md:text-2xl font-bold text-foreground">{t('simulation.retirementSimulator')}</h1>
                 </div>
                 <SidebarTrigger className="gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md">
                   <Settings className="w-4 h-4" />
-                  <span className="font-medium">Advanced Controls</span>
+                  <span className="font-medium">{t('results.advancedControls')}</span>
                 </SidebarTrigger>
               </div>
             </div>
@@ -232,7 +234,7 @@ export default function Results() {
         {/* Disclaimer */}
         <Card className="bg-zus-amber/10 border-zus-amber p-4 mb-6">
           <p className="text-sm font-semibold text-foreground">
-            ⚠️ Educational simulator. Not financial advice. Not a prediction.
+            {t('results.disclaimer')}
           </p>
         </Card>
 
@@ -251,11 +253,11 @@ export default function Results() {
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-muted-foreground">Forecast Pension (Nominal)</h2>
+                  <h2 className="text-lg font-semibold text-muted-foreground">{t('results.forecastNominal')}</h2>
                   <p className="text-4xl font-bold text-foreground mt-2">
                     {results.actualPension.toLocaleString('pl-PL')} PLN
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">per month</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t('results.perMonth')}</p>
                 </div>
                 <DollarSign className="w-8 h-8 text-zus-green" aria-hidden="true" />
               </div>
@@ -274,14 +276,14 @@ export default function Results() {
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-semibold text-muted-foreground">Real Pension (Inflation-Adjusted)</h2>
+                  <h2 className="text-lg font-semibold text-muted-foreground">{t('results.realPension')}</h2>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
                         <Info className="w-4 h-4 text-muted-foreground" aria-label="More information" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="max-w-xs">Adjusted for inflation using CPI to show purchasing power in today's terms</p>
+                        <p className="max-w-xs">{t('results.realPensionInfo')}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -290,7 +292,7 @@ export default function Results() {
               <p className="text-4xl font-bold text-foreground">
                 {results.realPension.toLocaleString('pl-PL')} PLN
               </p>
-              <p className="text-sm text-muted-foreground mt-1">per month (2025 value)</p>
+              <p className="text-sm text-muted-foreground mt-1">{t('results.value2025')}</p>
             </div>
           </EducationalCard>
         </div>
@@ -307,14 +309,14 @@ export default function Results() {
             }}
           >
             <div className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">vs. Average Benefit</h3>
+              <h3 className="text-lg font-semibold text-foreground mb-4">{t('results.vsAverage')}</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Your forecast:</span>
+                  <span className="text-muted-foreground">{t('results.yourForecast')}</span>
                   <span className="font-semibold">{results.actualPension.toLocaleString('pl-PL')} PLN</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Avg. in {simulationInput.endYear}:</span>
+                  <span className="text-muted-foreground">{t('results.avgIn').replace('{year}', String(simulationInput.endYear))}</span>
                   <span className="font-semibold">{results.averageBenefitAtRetirement.toLocaleString('pl-PL')} PLN</span>
                 </div>
                 <div className="pt-2 border-t border-border">
@@ -323,14 +325,14 @@ export default function Results() {
                       <>
                         <TrendingUp className="w-5 h-5 text-zus-green" aria-hidden="true" />
                         <span className="text-zus-green font-semibold">
-                          {((results.actualPension / results.averageBenefitAtRetirement - 1) * 100).toFixed(1)}% above average
+                          {t('results.aboveAverage').replace('{percent}', ((results.actualPension / results.averageBenefitAtRetirement - 1) * 100).toFixed(1))}
                         </span>
                       </>
                     ) : (
                       <>
                         <TrendingDown className="w-5 h-5 text-zus-red" aria-hidden="true" />
                         <span className="text-zus-red font-semibold">
-                          {((1 - results.actualPension / results.averageBenefitAtRetirement) * 100).toFixed(1)}% below average
+                          {t('results.belowAverage').replace('{percent}', ((1 - results.actualPension / results.averageBenefitAtRetirement) * 100).toFixed(1))}
                         </span>
                       </>
                     )}
@@ -351,14 +353,14 @@ export default function Results() {
           >
             <div className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <h3 className="text-lg font-semibold text-foreground">Replacement Rate</h3>
+                <h3 className="text-lg font-semibold text-foreground">{t('results.replacementRate')}</h3>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
                       <Info className="w-4 h-4 text-muted-foreground" aria-label="More information" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="max-w-xs">Your pension as a percentage of your indexed wage at retirement. Shows how well your pension replaces your working income.</p>
+                      <p className="max-w-xs">{t('results.replacementRateInfo')}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -367,7 +369,7 @@ export default function Results() {
                 {results.replacementRate.toFixed(1)}%
               </p>
               <p className="text-sm text-muted-foreground mt-2">
-                of indexed final wage
+                {t('results.ofFinalWage')}
               </p>
             </div>
           </EducationalCard>
