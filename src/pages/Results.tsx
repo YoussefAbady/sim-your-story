@@ -101,6 +101,12 @@ export default function Results() {
     
     const simulationResults = PensionEngine.simulate(enhancedInput);
     setResults(simulationResults);
+
+    // Log simulation usage (fire and forget)
+    const postalCode = (input as any).postalCode;
+    import('@/services/simulationLogger').then(({ logSimulationUsage }) => {
+      logSimulationUsage(input, simulationResults, expectedPension, postalCode);
+    });
   };
 
   const handleUpdateForecast = () => {

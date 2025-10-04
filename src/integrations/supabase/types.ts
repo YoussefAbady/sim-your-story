@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      simulation_logs: {
+        Row: {
+          account_funds: number | null
+          actual_pension: number
+          age: number
+          created_at: string
+          date_of_use: string
+          expected_pension: number | null
+          id: string
+          illness_included: boolean
+          postal_code: string | null
+          real_pension: number
+          salary_amount: number
+          sex: string
+          sub_account_funds: number | null
+          time_of_use: string
+        }
+        Insert: {
+          account_funds?: number | null
+          actual_pension: number
+          age: number
+          created_at?: string
+          date_of_use?: string
+          expected_pension?: number | null
+          id?: string
+          illness_included?: boolean
+          postal_code?: string | null
+          real_pension: number
+          salary_amount: number
+          sex: string
+          sub_account_funds?: number | null
+          time_of_use?: string
+        }
+        Update: {
+          account_funds?: number | null
+          actual_pension?: number
+          age?: number
+          created_at?: string
+          date_of_use?: string
+          expected_pension?: number | null
+          id?: string
+          illness_included?: boolean
+          postal_code?: string | null
+          real_pension?: number
+          salary_amount?: number
+          sex?: string
+          sub_account_funds?: number | null
+          time_of_use?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
