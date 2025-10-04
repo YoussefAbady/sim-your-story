@@ -21,12 +21,14 @@ serve(async (req) => {
     console.log('Generating education tip for field:', fieldKey, 'with user data:', userData);
 
     // Build context-aware prompt
-    const systemPrompt = `You are an educational assistant for a Polish pension calculator. Generate short, practical tips about the Polish pension system.
+    const systemPrompt = `You are an educational assistant for a Polish pension calculator. Your role is to explain WHY each field impacts the user's retirement plan.
 
 RULES:
-- Keep tips under 3 sentences
+- Explain WHY this specific field affects their pension calculation
+- Educate users about the impact on their retirement plan
+- Use context from their previous answers to personalize the explanation (e.g., if sex is female, explain female-specific retirement rules)
+- Keep explanations under 3 sentences but make them educational and insightful
 - Use simple, worker-friendly language
-- Focus on practical implications
 - Include relevant numbers when possible
 - Be encouraging and informative
 - ALWAYS respond in English`;
