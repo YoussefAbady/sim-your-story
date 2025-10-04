@@ -98,6 +98,13 @@ export default function AdminReports() {
     applySessionFilters();
   }, [sessions, sessionStartDate, sessionEndDate]);
 
+  // Refetch redeems when the tab is opened to ensure latest data (handles role changes)
+  useEffect(() => {
+    if (activeTab === 'redeems') {
+      fetchRedeems();
+    }
+  }, [activeTab]);
+
   const checkAdminAccess = async () => {
     try {
       setIsCheckingAuth(true);
