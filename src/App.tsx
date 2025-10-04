@@ -17,32 +17,35 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <GamificationProvider>
-      <EducationProvider>
-        <TooltipProvider>
-          <Sonner position="top-right" />
-          <BadgeCollection />
-          <SessionSummary />
-          <BrowserRouter>
-            <EducationPanel />
-            <EducationTipDisplay />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/simulation" element={<Simulation />} />
-              <Route path="/results" element={<Results />} />
-              <Route path="/report" element={<ReportView />} />
-              <Route path="/admin/reports" element={<AdminReports />} />
-              
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </EducationProvider>
-    </GamificationProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <GamificationProvider>
+        <EducationProvider>
+          <TooltipProvider>
+            <Sonner position="top-right" />
+            <BadgeCollection />
+            <SessionSummary />
+            <BrowserRouter>
+              <EducationPanel />
+              <EducationTipDisplay />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/simulation" element={<Simulation />} />
+                <Route path="/results" element={<Results />} />
+                <Route path="/report" element={<ReportView />} />
+                <Route path="/admin/reports" element={<AdminReports />} />
+                
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </EducationProvider>
+      </GamificationProvider>
+    </QueryClientProvider>
+  );
+};
+
 
 export default App;
