@@ -15,6 +15,7 @@ import { EducationalCard } from "@/components/education/EducationalCard";
 import { useEducation } from "@/contexts/EducationContext";
 import { useLocale } from "@/contexts/LocaleContext";
 import { EDUCATION_TIPS } from "@/data/educationContent";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import zusLogo from "@/assets/zus-logo.png";
 
 export default function Index() {
@@ -124,9 +125,12 @@ export default function Index() {
               className="h-16 md:h-20 w-auto cursor-pointer hover:opacity-80 transition-opacity"
             />
           </Link>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold text-foreground">{t('index.header.title')}</h1>
-            <p className="text-sm text-muted-foreground mt-1">{t('index.header.subtitle')}</p>
+          <div className="flex-1 flex items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">{t('index.header.title')}</h1>
+              <p className="text-sm text-muted-foreground mt-1">{t('index.header.subtitle')}</p>
+            </div>
+            <LanguageSwitcher />
           </div>
         </div>
       </header>
