@@ -616,9 +616,10 @@ export default function Results() {
               <SidebarGroupContent>
                 <Tabs value={activeTab} onValueChange={(value) => {
                   setActiveTab(value);
-                  // Award points for tab switch
-                  const { awardSessionPoints, POINT_VALUES } = require("@/services/sessionPointsService");
-                  awardSessionPoints(`sidebar-tab-${value}`, POINT_VALUES.TAB_SWITCH);
+                  // Award points for tab switch (non-blocking)
+                  import("@/services/sessionPointsService").then(({ awardSessionPoints, POINT_VALUES }) => {
+                    awardSessionPoints(`sidebar-tab-${value}`, POINT_VALUES.TAB_SWITCH);
+                  }).catch(() => {});
                   
                   // Show AI-generated educational tip when switching tabs
                   const tabEducationKeys: Record<string, string> = {
