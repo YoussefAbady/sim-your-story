@@ -14,7 +14,7 @@ export const BadgeCollection = () => {
   return (
     <Dialog open={showBadgeModal} onOpenChange={setShowBadgeModal}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
+        <DialogHeader className="sticky top-0 bg-background z-10 pb-4">
           <DialogTitle className="text-2xl font-bold">Badge Collection</DialogTitle>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>

@@ -47,6 +47,7 @@ export function SessionSummary() {
   const handleNewSession = async () => {
     await saveSessionSummary();
     clearSessionPoints();
+    // Don't clear badges - they persist across sessions
     setIsOpen(false);
     window.location.reload();
   };

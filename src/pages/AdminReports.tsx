@@ -76,8 +76,8 @@ export default function AdminReports() {
   const [filteredSessions, setFilteredSessions] = useState<SessionTime[]>([]);
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(true); // Demo mode - no auth required
   const [activeTab, setActiveTab] = useState<'simulations' | 'sessions' | 'quizzes'>('simulations');
   const [filterSex, setFilterSex] = useState<string>("all");
   const [filterIllness, setFilterIllness] = useState<string>("all");
@@ -88,14 +88,8 @@ export default function AdminReports() {
   const [sessionPageFilter, setSessionPageFilter] = useState<string>("all");
 
   useEffect(() => {
-    checkAdminAccess();
+    fetchAllData();
   }, []);
-
-  useEffect(() => {
-    if (isAdmin) {
-      fetchAllData();
-    }
-  }, [isAdmin]);
 
   useEffect(() => {
     applyFilters();
@@ -369,20 +363,6 @@ export default function AdminReports() {
     setSessionPageFilter("all");
   };
 
-  if (isCheckingAuth) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Checking authentication...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-background">

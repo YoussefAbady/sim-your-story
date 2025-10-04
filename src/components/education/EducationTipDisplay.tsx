@@ -17,11 +17,20 @@ export const EducationTipDisplay = () => {
     setIsExpanded(false);
   }, [currentTip?.id]);
 
-  const handleLearnMore = () => {
+  const handleLearnMore = async () => {
     if (!currentTip?.detailedContent && currentTip) {
       loadDetailedContent(currentTip.id);
     }
     setIsExpanded(true);
+    
+    // Award points for reading detailed content
+    if (currentTip) {
+      const { awardSessionPoints, POINT_VALUES } = await import("@/services/sessionPointsService");
+      awardSessionPoints(
+        `read-detailed-${currentTip.id}`,
+        POINT_VALUES.READ_DETAILED
+      );
+    }
   };
 
   const handleClose = () => {
@@ -41,7 +50,15 @@ export const EducationTipDisplay = () => {
             isExpanded ? 'max-w-2xl w-full' : 'max-w-md'
           }`}
         >
-          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30 p-5 shadow-lg max-h-[80vh] overflow-y-auto">
+          <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30 p-5 shadow-lg max-h-[80vh] overflow-y-auto relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 sticky top-2 right-2 float-right z-20 bg-background/80 backdrop-blur"
+              onClick={handleClose}
+            >
+              <X className="w-4 h-4" />
+            </Button>
             {isLoading ? (
                 <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
@@ -58,32 +75,22 @@ export const EducationTipDisplay = () => {
                   <Lightbulb className="w-5 h-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-start justify-between gap-2 mb-2">
+                   <div className="flex items-start justify-between gap-2 mb-2">
                     <h3 className="font-semibold text-foreground flex items-center gap-2">
                       {currentTip.icon && <span className="text-xl">{currentTip.icon}</span>}
                       {t('education.didYouKnow')}
                     </h3>
-                    <div className="flex gap-1">
-                      {!isExpanded && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={handleLearnMore}
-                          title={t('education.learnMore')}
-                        >
-                          <BookOpen className="w-4 h-4" />
-                        </Button>
-                      )}
+                    {!isExpanded && (
                       <Button
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6"
-                        onClick={handleClose}
+                        onClick={handleLearnMore}
+                        title={t('education.learnMore')}
                       >
-                        <X className="w-4 h-4" />
+                        <BookOpen className="w-4 h-4" />
                       </Button>
-                    </div>
+                    )}
                   </div>
                   <h4 className="font-medium text-sm text-foreground mb-1">
                     {currentTip.title}
