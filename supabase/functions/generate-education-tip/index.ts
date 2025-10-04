@@ -21,12 +21,19 @@ serve(async (req) => {
     console.log('Generating education tip for field:', fieldKey, 'with user data:', userData, 'detailed:', detailed, 'language:', language);
 
     const languageInstruction = language === 'pl' 
-      ? 'ALWAYS respond in Polish language.' 
-      : 'ALWAYS respond in English language.';
+      ? 'CRITICAL: You MUST respond ONLY in Polish language (Polski). Do NOT use English.' 
+      : 'CRITICAL: You MUST respond ONLY in English language. Do NOT use Polish.';
+
+    const languageContext = language === 'pl'
+      ? 'You are speaking to a Polish user. All explanations, numbers, and examples must be in Polish.'
+      : 'You are speaking to an English user. All explanations, numbers, and examples must be in English.';
 
     // Build context-aware prompt
     const systemPrompt = detailed
       ? `You are an educational assistant for a Polish pension calculator (ZUS). Provide DETAILED educational content about pension concepts in HTML format.
+
+${languageInstruction}
+${languageContext}
 
 CRITICAL RULES FOR DETAILED CONTENT:
 - Return ONLY valid HTML content (no markdown, no code blocks)
@@ -63,6 +70,9 @@ HTML Structure Example:
 IMPORTANT: Return ONLY the HTML content, no markdown formatting, no backticks, no code blocks.`
       : `You are an educational assistant for a Polish pension calculator (ZUS). Explain pension concepts in the SIMPLEST way possible for people with basic education.
 
+${languageInstruction}
+${languageContext}
+
 CRITICAL RULES:
 - Maximum 2-3 SHORT sentences (5 lines max total)
 - Use EXTREMELY simple, direct language - like talking to a 10-year-old
@@ -72,9 +82,11 @@ CRITICAL RULES:
 - Use context from previous answers (e.g., if female, mention age 60 retirement)
 - Include simple Polish numbers in PLN when helpful
 - Be friendly and encouraging
-- ${languageInstruction}
 
-Example good response:
+Example good response (in the language specified above):
+"💰 Higher salary = bigger pension! ZUS takes 19.52% of your salary each month and saves it for you. If you earn 5,000 PLN, about 976 PLN goes to your future pension every month."
+
+Example bad response:
 "💰 Higher salary = bigger pension! ZUS takes 19.52% of your salary each month and saves it for you. If you earn 5,000 PLN, about 976 PLN goes to your future pension every month."
 
 Example bad response:
@@ -91,8 +103,14 @@ Example bad response:
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userContext }
+          { 
+            role: "system", 
+            content: `${systemPrompt}\n\nREMEMBER: ${languageInstruction}` 
+          },
+          { 
+            role: "user", 
+            content: `${userContext}\n\n${languageInstruction}` 
+          }
         ],
       }),
     });
