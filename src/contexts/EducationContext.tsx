@@ -11,20 +11,18 @@ export interface EducationTip {
   icon?: string;
   detailedContent?: string;
   timestamp?: number;
+  category?: string;
 }
 
 interface EducationContextType {
   currentTip: EducationTip | null;
   isLoading: boolean;
   isLoadingDetailed: boolean;
-  isPanelOpen: boolean;
   tipHistory: EducationTip[];
   showTip: (tip: EducationTip) => void;
   showAITip: (fieldKey: string, userData?: any) => Promise<void>;
   loadDetailedContent: (fieldKey: string, userData?: any) => Promise<void>;
-  loadDetailedContentForHistoryTip: (tip: EducationTip) => Promise<void>;
   hideTip: () => void;
-  togglePanel: () => void;
 }
 
 const EducationContext = createContext<EducationContextType | undefined>(undefined);
@@ -37,7 +35,6 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [currentTip, setCurrentTip] = useState<EducationTip | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetailed, setIsLoadingDetailed] = useState(false);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [tipHistory, setTipHistory] = useState<EducationTip[]>([]);
 
   const showTip = (tip: EducationTip) => {
@@ -55,9 +52,7 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (tipCache.has(cacheKey)) {
       const cachedTip = tipCache.get(cacheKey)!;
       addTipToHistory(cachedTip);
-      if (!isPanelOpen) {
-        setCurrentTip(cachedTip);
-      }
+      setCurrentTip(cachedTip);
       return;
     }
 
@@ -74,9 +69,7 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
         const staticTip = EDUCATION_TIPS[fieldKey];
         if (staticTip) {
           addTipToHistory(staticTip);
-          if (!isPanelOpen) {
-            setCurrentTip(staticTip);
-          }
+          setCurrentTip(staticTip);
         }
         return;
       }
@@ -84,9 +77,7 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
       if (data) {
         tipCache.set(cacheKey, data);
         addTipToHistory(data);
-        if (!isPanelOpen) {
-          setCurrentTip(data);
-        }
+        setCurrentTip(data);
         awardPoints('tip_read');
       }
     } catch (err) {
@@ -95,9 +86,7 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
       const staticTip = EDUCATION_TIPS[fieldKey];
       if (staticTip) {
         addTipToHistory(staticTip);
-        if (!isPanelOpen) {
-          setCurrentTip(staticTip);
-        }
+        setCurrentTip(staticTip);
       }
     } finally {
       setIsLoading(false);
@@ -130,44 +119,8 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
   };
 
-  const loadDetailedContentForHistoryTip = async (tip: EducationTip) => {
-    setIsLoadingDetailed(true);
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-education-tip', {
-        body: { fieldKey: tip.id, detailed: true, language: locale }
-      });
-
-      if (error) {
-        console.error('Error loading detailed content:', error);
-        return;
-      }
-
-      if (data?.detailedContent) {
-        // Update the tip in history
-        setTipHistory(prev => prev.map(t => 
-          t.timestamp === tip.timestamp && t.id === tip.id
-            ? { ...t, detailedContent: data.detailedContent }
-            : t
-        ));
-        awardPoints('detailed_tip_read');
-      }
-    } catch (err) {
-      console.error('Failed to load detailed content:', err);
-    } finally {
-      setIsLoadingDetailed(false);
-    }
-  };
-
   const hideTip = () => {
     setCurrentTip(null);
-  };
-
-  const togglePanel = () => {
-    setIsPanelOpen(prev => !prev);
-    if (!isPanelOpen) {
-      setCurrentTip(null); // Hide popup when opening panel
-    }
   };
 
   return (
@@ -175,14 +128,11 @@ export const EducationProvider: React.FC<{ children: ReactNode }> = ({ children 
       currentTip, 
       isLoading, 
       isLoadingDetailed, 
-      isPanelOpen, 
       tipHistory, 
       showTip, 
       showAITip, 
       loadDetailedContent,
-      loadDetailedContentForHistoryTip,
-      hideTip, 
-      togglePanel 
+      hideTip
     }}>
       {children}
     </EducationContext.Provider>

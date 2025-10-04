@@ -1,17 +1,19 @@
 import { useEducation } from "@/contexts/EducationContext";
 import { Card } from "@/components/ui/card";
-import { Lightbulb, X, Loader2, BookOpen, Pin } from "lucide-react";
+import { Lightbulb, X, Loader2, BookOpen, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
 import DOMPurify from "dompurify";
 import { useLocation } from "react-router-dom";
+import { AIChatPanel } from "./AIChatPanel";
 
 export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } = {}) => {
-  const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip, togglePanel } = useEducation();
+  const { currentTip, isLoading, isLoadingDetailed, loadDetailedContent, hideTip } = useEducation();
   const { t } = useLocale();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const location = useLocation();
   const isResultsPage = location.pathname === '/results';
 
@@ -38,7 +40,13 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
 
   const handleClose = () => {
     setIsExpanded(false);
+    setIsChatOpen(false);
     hideTip();
+  };
+
+  const handleChatOpen = () => {
+    setIsChatOpen(true);
+    handleClose();
   };
 
   // Hide global instance on results page (Results.tsx has its own positioned instance)
@@ -48,8 +56,18 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
   }
 
   return (
-    <AnimatePresence>
-      {(currentTip || isLoading) && (
+    <>
+      <AIChatPanel
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        initialContext={currentTip ? {
+          title: currentTip.title,
+          content: currentTip.content,
+          icon: currentTip.icon
+        } : undefined}
+      />
+      <AnimatePresence>
+        {(currentTip || isLoading) && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -101,13 +119,10 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6"
-                            onClick={() => {
-                              togglePanel();
-                              handleClose();
-                            }}
-                            title="Pin to Learning Center"
+                            onClick={handleChatOpen}
+                            title="Chat with AI"
                           >
-                            <Pin className="w-4 h-4" />
+                            <MessageCircle className="w-4 h-4" />
                           </Button>
                           {!isExpanded && (
                             <Button
@@ -176,8 +191,9 @@ export const EducationTipDisplay = ({ sidebarOpen }: { sidebarOpen?: boolean } =
               </>
             ) : null}
           </Card>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };

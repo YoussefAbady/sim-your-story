@@ -2,3 +2,6 @@ project_id = "ionwzcnnekdueixasouk"
 
 [functions.generate-education-tip]
 verify_jwt = false
+
+[functions.chat-education]
+verify_jwt = false

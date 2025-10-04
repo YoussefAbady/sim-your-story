@@ -2,15 +2,18 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { LocaleProvider } from "@/contexts/LocaleContext";
 import { EducationProvider } from "@/contexts/EducationContext";
 import { EducationTipDisplay } from "@/components/education/EducationTipDisplay";
-import { EducationPanel } from "@/components/education/EducationPanel";
-import { MainContentWrapper } from "@/components/education/MainContentWrapper";
 import { GamificationProvider } from "@/contexts/GamificationContext";
 import { BadgeCollection } from "@/components/gamification/BadgeCollection";
 import { SessionSummary } from "@/components/gamification/SessionSummary";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
+import Onboarding from "./pages/Onboarding";
+import Dashboard from "./pages/Dashboard";
 import Simulation from "./pages/Simulation";
+import Simulator from "./pages/Simulator";
 import Results from "./pages/Results";
 import ReportView from "./pages/ReportView";
 import AdminReports from "./pages/AdminReports";
@@ -21,34 +24,34 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <GamificationProvider>
-        <EducationProvider>
-          <TooltipProvider>
-            <Sonner position="top-right" />
-            <BadgeCollection />
-            <SessionSummary />
-            <BrowserRouter>
-              <EducationPanel />
-              <MainContentWrapper>
-                <EducationTipDisplay />
+      <LocaleProvider>
+        <GamificationProvider>
+          <EducationProvider>
+            <TooltipProvider>
+              <Sonner position="top-right" />
+              <BadgeCollection />
+              <SessionSummary />
+              <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
-                  <Route path="/simulation" element={<Simulation />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/onboarding" element={<Onboarding />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/results" element={<Results />} />
-                  <Route path="/report" element={<ReportView />} />
+                  <Route path="/report/:id" element={<ReportView />} />
+                  <Route path="/simulation" element={<Simulation />} />
+                  <Route path="/simulator" element={<Simulator />} />
                   <Route path="/admin/reports" element={<AdminReports />} />
-                  
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </MainContentWrapper>
-            </BrowserRouter>
-          </TooltipProvider>
-        </EducationProvider>
-      </GamificationProvider>
+                <EducationTipDisplay />
+              </BrowserRouter>
+            </TooltipProvider>
+          </EducationProvider>
+        </GamificationProvider>
+      </LocaleProvider>
     </QueryClientProvider>
   );
 };
-
 
 export default App;
