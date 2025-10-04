@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import zusLogo from "@/assets/zus-logo.png";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -102,7 +103,7 @@ export default function Simulation() {
         <div className="container mx-auto px-4 py-6 flex items-center gap-6">
           <Link to="/">
             <img 
-              src="/src/assets/zus-logo.png" 
+              src={zusLogo} 
               alt="ZUS - Zakład Ubezpieczeń Społecznych" 
               className="h-12 md:h-14 w-auto cursor-pointer hover:opacity-80 transition-opacity"
             />

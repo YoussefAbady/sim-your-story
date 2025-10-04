@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download } from "lucide-react";
 import { PensionReport } from "@/components/report/PensionReport";
+import zusLogo from "@/assets/zus-logo.png";
 import { SimulationInput, SimulationResult } from "@/services/pensionEngine";
 import { SalaryPeriod, IllnessPeriod } from "@/pages/Results";
 
@@ -70,7 +71,7 @@ export default function ReportView() {
             <div className="flex items-center gap-6">
               <Link to="/">
                 <img 
-                  src="/src/assets/zus-logo.png" 
+                  src={zusLogo} 
                   alt="ZUS - Zakład Ubezpieczeń Społecznych" 
                   className="h-10 md:h-12 w-auto cursor-pointer hover:opacity-80 transition-opacity"
                 />

@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import zusLogo from "@/assets/zus-logo.png";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw, Download, Mail, Eye } from "lucide-react";
 import {
@@ -208,7 +209,7 @@ export default function Results() {
                   </Button>
                   <Link to="/">
                     <img 
-                      src="/src/assets/zus-logo.png" 
+                      src={zusLogo} 
                       alt="ZUS - Zakład Ubezpieczeń Społecznych" 
                       className="h-10 md:h-12 w-auto cursor-pointer hover:opacity-80 transition-opacity"
                     />

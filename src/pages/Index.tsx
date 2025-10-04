@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import zusLogo from "@/assets/zus-logo.png";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ export default function Index() {
         <div className="container mx-auto px-4 py-6 flex items-center gap-6">
           <Link to="/">
             <img 
-              src="/src/assets/logo.png" 
+              src={zusLogo} 
               alt="ZUS - Zakład Ubezpieczeń Społecznych" 
               className="h-16 md:h-20 w-auto cursor-pointer hover:opacity-80 transition-opacity"
             />
