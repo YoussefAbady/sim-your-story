@@ -124,7 +124,7 @@ export default function Results() {
                 </div>
                 <SidebarTrigger className="gap-2 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-md">
                   <Settings className="w-4 h-4" />
-                  <span className="font-medium">Advanced Controls</span>
+                  <span className="font-medium">Edit Forecast Options</span>
                 </SidebarTrigger>
               </div>
             </div>
