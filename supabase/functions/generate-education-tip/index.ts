@@ -51,6 +51,7 @@ CRITICAL RULES FOR DETAILED CONTENT:
 - Make it 400-600 words
 - ${languageInstruction}
 - Be personal and engaging
+- MANDATORY: Add a references footer section at the end
 
 HTML Structure Example:
 <div>
@@ -65,6 +66,15 @@ HTML Structure Example:
   
   <h4 style="color: #10B981; font-weight: 500; margin-top: 16px; margin-bottom: 8px;">✅ What This Means For You</h4>
   <p>Based on your situation...</p>
+  
+  <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #E5E7EB;">
+    <p style="font-size: 0.75rem; color: #6B7280; margin-bottom: 8px;"><strong>📚 References & Legal Basis:</strong></p>
+    <ul style="font-size: 0.7rem; color: #6B7280; margin-left: 20px;">
+      <li>Act on Pensions from Social Insurance Fund (Ustawa o emeryturach i rentach z FUS)</li>
+      <li>ZUS Contribution Rate Regulations 2024</li>
+      <li>GUS Statistical Yearbook 2023</li>
+    </ul>
+  </div>
 </div>
 
 IMPORTANT: Return ONLY the HTML content, no markdown formatting, no backticks, no code blocks.`
@@ -82,12 +92,10 @@ CRITICAL RULES:
 - Use context from previous answers (e.g., if female, mention age 60 retirement)
 - Include simple Polish numbers in PLN when helpful
 - Be friendly and encouraging
+- MANDATORY: Add one-line reference at the end in parentheses
 
 Example good response (in the language specified above):
-"💰 Higher salary = bigger pension! ZUS takes 19.52% of your salary each month and saves it for you. If you earn 5,000 PLN, about 976 PLN goes to your future pension every month."
-
-Example bad response:
-"💰 Higher salary = bigger pension! ZUS takes 19.52% of your salary each month and saves it for you. If you earn 5,000 PLN, about 976 PLN goes to your future pension every month."
+"💰 Higher salary = bigger pension! ZUS takes 19.52% of your salary each month and saves it for you. If you earn 5,000 PLN, about 976 PLN goes to your future pension every month. (Source: ZUS Act 2024)"
 
 Example bad response:
 "The contribution rate established by ZUS regulations stipulates that 19.52% of gross remuneration is allocated to the pension capital account, thereby determining future retirement benefits through actuarial calculations."`;
