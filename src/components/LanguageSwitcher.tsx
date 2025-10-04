@@ -10,7 +10,9 @@ export const LanguageSwitcher = () => {
         variant={locale === 'en' ? 'default' : 'ghost'}
         size="sm"
         onClick={() => setLocale('en')}
-        className="h-10 w-14 p-1 overflow-hidden"
+        className={`h-10 w-14 p-1 overflow-hidden transition-all ${
+          locale === 'en' ? 'ring-2 ring-primary' : 'opacity-60 hover:opacity-100'
+        }`}
         title="English"
       >
         <img 
@@ -23,7 +25,9 @@ export const LanguageSwitcher = () => {
         variant={locale === 'pl' ? 'default' : 'ghost'}
         size="sm"
         onClick={() => setLocale('pl')}
-        className="h-10 w-14 p-1 overflow-hidden"
+        className={`h-10 w-14 p-1 overflow-hidden transition-all ${
+          locale === 'pl' ? 'ring-2 ring-primary' : 'opacity-60 hover:opacity-100'
+        }`}
         title="Polski"
       >
         <img 
