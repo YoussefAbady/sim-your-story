@@ -24,9 +24,12 @@ export const EducationalCard = ({ educationKey, children, userData, ...props }: 
     <Card 
       {...props} 
       onClick={handleClick}
-      className={`cursor-pointer transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 relative ${props.className || ''}`}
+      className={`cursor-pointer group transition-all duration-300 hover:border-primary hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-2 hover:scale-[1.02] relative overflow-hidden ${props.className || ''}`}
     >
-      {children}
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative z-10">
+        {children}
+      </div>
     </Card>
   );
 };
