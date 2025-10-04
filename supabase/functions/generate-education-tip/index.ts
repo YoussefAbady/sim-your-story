@@ -11,17 +11,21 @@ serve(async (req) => {
   }
 
   try {
-    const { fieldKey, userData, detailed = false } = await req.json();
+    const { fieldKey, userData, detailed = false, language = 'en' } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log('Generating education tip for field:', fieldKey, 'with user data:', userData, 'detailed:', detailed);
+    console.log('Generating education tip for field:', fieldKey, 'with user data:', userData, 'detailed:', detailed, 'language:', language);
+
+    const languageInstruction = language === 'pl' 
+      ? 'ALWAYS respond in Polish language.' 
+      : 'ALWAYS respond in English language.';
 
     // Build context-aware prompt
-    const systemPrompt = detailed 
+    const systemPrompt = detailed
       ? `You are an educational assistant for a Polish pension calculator (ZUS). Provide DETAILED educational content about pension concepts in HTML format.
 
 CRITICAL RULES FOR DETAILED CONTENT:
@@ -38,7 +42,7 @@ CRITICAL RULES FOR DETAILED CONTENT:
 - Use bullet points <ul><li> for lists
 - Include specific calculations using user's data (show math!)
 - Make it 400-600 words
-- ALWAYS respond in English
+- ${languageInstruction}
 - Be personal and engaging
 
 HTML Structure Example:
@@ -68,7 +72,7 @@ CRITICAL RULES:
 - Use context from previous answers (e.g., if female, mention age 60 retirement)
 - Include simple Polish numbers in PLN when helpful
 - Be friendly and encouraging
-- ALWAYS respond in English
+- ${languageInstruction}
 
 Example good response:
 "💰 Higher salary = bigger pension! ZUS takes 19.52% of your salary each month and saves it for you. If you earn 5,000 PLN, about 976 PLN goes to your future pension every month."
