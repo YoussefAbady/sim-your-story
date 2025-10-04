@@ -1,7 +1,7 @@
 import { useToast } from "@/hooks/use-toast";
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 
-export function Toaster() {
+export function Toaster({ sidebarOpen }: { sidebarOpen?: boolean }) {
   const { toasts } = useToast();
 
   return (
@@ -18,7 +18,7 @@ export function Toaster() {
           </Toast>
         );
       })}
-      <ToastViewport />
+      <ToastViewport className={sidebarOpen ? "sm:right-[calc(30vw+1rem)]" : ""} />
     </ToastProvider>
   );
 }

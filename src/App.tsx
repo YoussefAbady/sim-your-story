@@ -22,7 +22,7 @@ const App = () => (
     <GamificationProvider>
       <EducationProvider>
         <TooltipProvider>
-          <Toaster />
+          <Toaster sidebarOpen={false} />
           <Sonner position="top-right" />
           <EducationTipDisplay />
           <BadgeCollection />

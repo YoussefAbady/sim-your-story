@@ -202,13 +202,11 @@ export default function Results() {
   const randomFact = PENSION_FACTS[Math.floor(Math.random() * PENSION_FACTS.length)];
 
   return (
-    <SidebarProvider defaultOpen={false} style={{ ["--sidebar-width" as any]: "30vw" } as CSSProperties} open={sidebarOpen} onOpenChange={setSidebarOpen}>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-secondary/20 to-background relative overflow-hidden">
-        {/* Custom Toaster positioned to avoid sidebar */}
-        <div className={sidebarOpen ? "mr-[30vw]" : ""}>
-          <Toaster />
-        </div>
-        <AnimatedBackground variant="orbs" className="opacity-40" />
+    <>
+      <Toaster sidebarOpen={sidebarOpen} />
+      <SidebarProvider defaultOpen={false} style={{ ["--sidebar-width" as any]: "30vw" } as CSSProperties} open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <div className="min-h-screen flex w-full bg-gradient-to-br from-background via-secondary/20 to-background relative overflow-hidden">
+          <AnimatedBackground variant="orbs" className="opacity-40" />
         <div className="flex-1 flex flex-col min-h-screen">
           <header className="border-b border-border bg-card sticky top-0 z-10">
             <div className="container mx-auto px-4 py-6">
@@ -727,5 +725,6 @@ export default function Results() {
         </Sidebar>
       </div>
     </SidebarProvider>
+    </>
   );
 }
