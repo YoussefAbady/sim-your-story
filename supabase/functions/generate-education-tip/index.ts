@@ -31,6 +31,8 @@ serve(async (req) => {
       'workStartYear', 'expectedPension', 'pensionGroups', 'minimumPension',
       'averagePension', 'aboveAverage', 'contributionYears', 'sickLeave',
       'simulation', 'employmentGaps', 'indexation',
+      // Pension group specific keys
+      'pension_group_below_minimum', 'pension_group_minimum', 'pension_group_average', 'pension_group_above_average',
       // Results page fields
       'nominalPension', 'realPension', 'replacementRate', 'averageComparison',
       'accountGrowth', 'contributionRate'
@@ -73,7 +75,12 @@ serve(async (req) => {
         currentSalary: typeof data?.currentSalary === 'number' ? Math.floor(Math.max(0, data.currentSalary)) : null,
         accountValue: typeof data?.accountValue === 'number' ? Math.floor(Math.max(0, data.accountValue)) : null,
         workStartYear: typeof data?.workStartYear === 'number' ? Math.floor(Math.max(1950, Math.min(2050, data.workStartYear))) : null,
-        expectedPension: typeof data?.expectedPension === 'number' ? Math.floor(Math.max(0, data.expectedPension)) : null,
+        expectedPension: typeof data?.expectedPension === 'number' || typeof data?.expectedPension === 'string' 
+          ? Math.floor(Math.max(0, parseFloat(data.expectedPension))) : null,
+        pensionGroupKey: typeof data?.pensionGroupKey === 'string' ? data.pensionGroupKey : null,
+        pensionGroupLabel: typeof data?.pensionGroupLabel === 'string' ? data.pensionGroupLabel : null,
+        pensionAmount: typeof data?.pensionAmount === 'number' ? Math.floor(Math.max(0, data.pensionAmount)) : null,
+        pensionDescription: typeof data?.pensionDescription === 'string' ? data.pensionDescription : null,
       };
     };
     
@@ -258,7 +265,50 @@ function buildUserContext(fieldKey: string, userData: any, detailed = false): st
   const currentSalary = userData?.currentSalary || null;
   const workStartYear = userData?.workStartYear || null;
   const expectedPension = userData?.expectedPension || null;
+  const pensionGroupKey = userData?.pensionGroupKey || null;
+  const pensionGroupLabel = userData?.pensionGroupLabel || null;
+  const pensionAmount = userData?.pensionAmount || null;
+  const pensionDescription = userData?.pensionDescription || null;
 
+  // Handle pension group specific context
+  if (fieldKey.startsWith('pension_group_')) {
+    let context = `Generate ${detailed ? 'detailed educational content' : 'a funny and educational tip'} about the "${pensionGroupLabel}" pension group (${pensionAmount} PLN/month) in the Polish pension system.\n\n`;
+    
+    context += `PENSION GROUP DETAILS:\n`;
+    context += `- Group: ${pensionGroupLabel}\n`;
+    context += `- Average amount: ${pensionAmount} PLN/month\n`;
+    context += `- Description: ${pensionDescription}\n`;
+    if (expectedPension) context += `- User's expected pension: ${expectedPension} PLN/month\n`;
+    
+    context += `\n\nFocus on:\n`;
+    
+    if (pensionGroupKey === 'below_minimum') {
+      context += `- Why some pensions fall below minimum (low employment activity, insufficient contribution years)\n`;
+      context += `- What happens when you don't meet minimum requirements (<25 years men, <20 years women)\n`;
+      context += `- How to increase from this level\n`;
+    } else if (pensionGroupKey === 'minimum') {
+      context += `- What is the minimum pension guarantee (1,780 PLN)\n`;
+      context += `- Who qualifies for minimum pension\n`;
+      context += `- Minimum contribution requirements\n`;
+    } else if (pensionGroupKey === 'average') {
+      context += `- What the average Polish pension (2,850 PLN) represents\n`;
+      context += `- Typical career path leading to average pension\n`;
+      context += `- How to move above average\n`;
+    } else if (pensionGroupKey === 'above_average') {
+      context += `- What it takes to get above-average pension (4,200 PLN+)\n`;
+      context += `- Impact of higher earnings and 35+ contribution years\n`;
+      context += `- Long-term benefits of consistent high contributions\n`;
+    }
+    
+    if (expectedPension && pensionAmount) {
+      const difference = expectedPension - pensionAmount;
+      context += `\nThe user expects ${expectedPension} PLN, which is ${Math.abs(difference)} PLN ${difference > 0 ? 'above' : 'below'} this ${pensionGroupLabel} group.\n`;
+    }
+    
+    return context;
+  }
+
+  // Default context for other fields
   let context = `Generate ${detailed ? 'detailed educational content' : 'an educational tip'} about "${fieldKey}" for the Polish pension system.\n\n`;
 
   context += `USER PROFILE:\n`;
@@ -303,7 +353,11 @@ function getIconForField(fieldKey: string): string {
     replacementRate: "📊",
     averageComparison: "📈",
     accountGrowth: "📈",
-    contributionRate: "💳"
+    contributionRate: "💳",
+    pension_group_below_minimum: "⚠️",
+    pension_group_minimum: "🛡️",
+    pension_group_average: "📊",
+    pension_group_above_average: "⭐"
   };
   
   return iconMap[fieldKey] || "💡";
