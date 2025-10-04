@@ -206,7 +206,12 @@ export default function Results() {
                     <ArrowLeft className="w-4 h-4" />
                     Back
                   </Button>
-                  <div>
+                  <img 
+                    src="/src/assets/zus-logo.png" 
+                    alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+                    className="h-10 md:h-12 w-auto"
+                  />
+                  <div className="sr-only">
                     <h1 className="text-3xl font-bold text-foreground">Your Pension Forecast</h1>
                     <p className="text-muted-foreground mt-2">Based on ZUS actuarial data (2023-2080)</p>
                   </div>

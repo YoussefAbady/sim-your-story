@@ -65,6 +65,11 @@ export default function ReportView() {
               <ArrowLeft className="w-4 h-4" />
               Back to Results
             </Button>
+            <img 
+              src="/src/assets/zus-logo.png" 
+              alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+              className="h-10 md:h-12 w-auto"
+            />
             <Button onClick={handlePrint} className="gap-2">
               <Download className="w-4 h-4" />
               Download PDF

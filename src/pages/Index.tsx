@@ -75,9 +75,12 @@ export default function Index() {
 
       {/* Header */}
       <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-foreground">ZUS Pension Simulator</h1>
-          <p className="text-muted-foreground mt-2">Educational tool for forecasting pension amounts</p>
+        <div className="container mx-auto px-4 py-6 flex items-center justify-center">
+          <img 
+            src="/src/assets/zus-logo.png" 
+            alt="ZUS - Zakład Ubezpieczeń Społecznych" 
+            className="h-16 md:h-20 w-auto"
+          />
         </div>
       </header>
 
