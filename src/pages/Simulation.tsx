@@ -165,11 +165,18 @@ export default function Simulation() {
                     control={form.control}
                     name="sex"
                     render={({ field }) => (
-                      <FormItem onClick={() => showAITip('gender', form.getValues())}>
+                      <FormItem>
                         <FormLabel>Sex</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select 
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            // Trigger tip with the newly selected value
+                            showAITip('gender', { ...form.getValues(), sex: value });
+                          }} 
+                          defaultValue={field.value}
+                        >
                           <FormControl>
-                            <SelectTrigger aria-required="true" className="cursor-help">
+                            <SelectTrigger aria-required="true">
                               <SelectValue placeholder="Select sex" />
                             </SelectTrigger>
                           </FormControl>
