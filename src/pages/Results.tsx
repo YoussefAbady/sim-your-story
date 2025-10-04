@@ -4,7 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, Calendar, DollarSign, Info, Settings, RefreshCw, Download, Mail, Eye } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { EmailReportDialog } from "@/components/report/EmailReportDialog";
+import { PensionReport } from "@/components/report/PensionReport";
+import { useToast } from "@/hooks/use-toast";
 import { PensionEngine, SimulationInput, SimulationResult } from "@/services/pensionEngine";
 import { PENSION_FACTS } from "@/services/pensionData";
 import {
@@ -52,6 +61,8 @@ export default function Results() {
   const [customIndexation, setCustomIndexation] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState("growth");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Retrieve simulation data from sessionStorage
@@ -114,6 +125,48 @@ export default function Results() {
     if (simulationInput) {
       runSimulation(simulationInput);
     }
+  };
+
+  const handleDownloadReport = () => {
+    // Store current state in sessionStorage for report
+    if (results) {
+      sessionStorage.setItem("simulationResults", JSON.stringify(results));
+      sessionStorage.setItem("historicalSalaries", JSON.stringify(historicalSalaries));
+      sessionStorage.setItem("futureSalaries", JSON.stringify(futureSalaries));
+      sessionStorage.setItem("illnessPeriods", JSON.stringify(illnessPeriods));
+      if (customIndexation !== null) {
+        sessionStorage.setItem("customIndexation", customIndexation.toString());
+      }
+    }
+    
+    // Trigger print dialog (user can save as PDF)
+    window.print();
+  };
+
+  const handleViewReport = () => {
+    // Store current state for report view
+    if (results) {
+      sessionStorage.setItem("simulationResults", JSON.stringify(results));
+      sessionStorage.setItem("historicalSalaries", JSON.stringify(historicalSalaries));
+      sessionStorage.setItem("futureSalaries", JSON.stringify(futureSalaries));
+      sessionStorage.setItem("illnessPeriods", JSON.stringify(illnessPeriods));
+      if (customIndexation !== null) {
+        sessionStorage.setItem("customIndexation", customIndexation.toString());
+      }
+    }
+    
+    navigate("/report");
+  };
+
+  const handleSendEmail = async (email: string, allowContact: boolean) => {
+    // TODO: Implement email sending via edge function
+    // For now, just show a toast
+    toast({
+      title: "Email functionality coming soon",
+      description: "Please use Download or View options for now.",
+    });
+    
+    console.log("Email report to:", email, "Allow contact:", allowContact);
   };
 
   if (!results || !simulationInput) {
@@ -381,7 +434,36 @@ export default function Results() {
               >
                 Run New Simulation
               </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="lg" className="gap-2">
+                    <Download className="w-4 h-4" />
+                    Export Report
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  <DropdownMenuItem onClick={handleDownloadReport} className="gap-2 cursor-pointer">
+                    <Download className="w-4 h-4" />
+                    Download
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setEmailDialogOpen(true)} className="gap-2 cursor-pointer">
+                    <Mail className="w-4 h-4" />
+                    Email Report
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleViewReport} className="gap-2 cursor-pointer">
+                    <Eye className="w-4 h-4" />
+                    View Report
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
+            
+            <EmailReportDialog
+              open={emailDialogOpen}
+              onOpenChange={setEmailDialogOpen}
+              onSendEmail={handleSendEmail}
+            />
 
             {/* Data Source Footer */}
             <footer className="mt-12 pt-6 border-t border-border">
